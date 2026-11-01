@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=talentpulse-docker-secret-2026
+      - PORT=5000
+    volumes:
+      - ./talentpulse.db:/app/talentpulse.db
+    restart: unless-stopped
