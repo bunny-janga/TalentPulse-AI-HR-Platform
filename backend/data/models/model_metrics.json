@@ -1,0 +1,31 @@
+{
+  "model_type": "RandomForestClassifier",
+  "dataset": "IBM HR Analytics Attrition Benchmark (1,470 samples)",
+  "features": [
+    "tenure",
+    "salary_level",
+    "overtime",
+    "performance_rating",
+    "performance_trend",
+    "leave_frequency",
+    "survey_sentiment",
+    "promotion_gap"
+  ],
+  "metrics": {
+    "accuracy": 0.9266,
+    "precision": 0.8214,
+    "recall": 0.8519,
+    "f1_score": 0.8364,
+    "roc_auc": 0.9754
+  },
+  "feature_importances": {
+    "tenure": 0.0476,
+    "salary_level": 0.0878,
+    "overtime": 0.3138,
+    "performance_rating": 0.0426,
+    "performance_trend": 0.139,
+    "leave_frequency": 0.0533,
+    "survey_sentiment": 0.25,
+    "promotion_gap": 0.0659
+  }
+}

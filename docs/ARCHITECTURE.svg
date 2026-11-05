@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Segoe UI, Arial, sans-serif">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#111"/></marker>
+<pattern id="d" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1.2" fill="#11111133"/></pattern></defs>
+<rect width="1200" height="760" fill="#fff4d6"/><rect width="1200" height="760" fill="url(#d)"/>
+<text x="40" y="52" font-size="30" font-weight="900" fill="#111">TalentPulse AI · Architecture</text>
+<text x="40" y="78" font-size="15" fill="#333">Four roles, one API, two AI models and two GenAI flows. All data is synthetic.</text>
+<g font-weight="800" fill="#111">
+<g><rect x="46" y="126" width="1108" height="116" fill="#111"/><rect x="40" y="120" width="1108" height="116" fill="#62b6ff" stroke="#111" stroke-width="4"/>
+<text x="60" y="152" font-size="18">CLIENT · React 18 + Vite (hash router, no runtime CDN)</text>
+<g font-size="14" font-weight="700"><text x="60" y="184">Login · Home · Leave · Reviews · Directory + Org chart + Onboarding</text><text x="60" y="208">Policy library · Helpdesk chat · Surveys · Attrition radar · Flags · Org metrics</text></g></g>
+<g><rect x="46" y="296" width="1108" height="130" fill="#111"/><rect x="40" y="290" width="1108" height="130" fill="#ffd23f" stroke="#111" stroke-width="4"/>
+<text x="60" y="322" font-size="18">API · FastAPI (Swagger at /docs)</text>
+<g font-size="14" font-weight="700"><text x="60" y="352">JWT bearer auth · RoleChecker dependency on every route · Pydantic v2 validation</text>
+<text x="60" y="376">Rules enforced server-side: attrition = HR + direct manager only · salary redacted · drafts hidden from employees</text>
+<text x="60" y="400">Routers: auth · employees · departments · leave · reviews · policies · surveys · onboarding · attrition · ai · chat · admin · notifications</text></g></g>
+<g><rect x="46" y="486" width="540" height="150" fill="#111"/><rect x="40" y="480" width="540" height="150" fill="#ff7ab8" stroke="#111" stroke-width="4"/>
+<text x="60" y="512" font-size="18">AI (scikit-learn)</text><g font-size="14" font-weight="700">
+<text x="60" y="542">1. RandomForest attrition model (8 features)</text><text x="60" y="566">   Top-3 drivers via one-feature counterfactuals + actions</text>
+<text x="60" y="594">2. Performance trend flags (2+ declining ratings)</text><text x="60" y="618">   WARNING / CRITICAL + suggested action</text></g></g>
+<g><rect x="626" y="486" width="540" height="150" fill="#111"/><rect x="620" y="480" width="540" height="150" fill="#5be3a0" stroke="#111" stroke-width="4"/>
+<text x="640" y="512" font-size="18">GenAI (Gemini / Groq / OpenAI, offline fallback)</text><g font-size="14" font-weight="700">
+<text x="640" y="542">1. Policy helpdesk RAG: TF-IDF retrieval → grounded answer + sources</text><text x="640" y="566">   No match → "not covered in current policy"</text>
+<text x="640" y="594">2. Review drafter: rough bullets → 4-part draft (human edits)</text><text x="640" y="618">   Bonus: survey themes · exit-interview summary</text></g></g>
+<g><rect x="46" y="676" width="1108" height="62" fill="#111"/><rect x="40" y="670" width="1108" height="62" fill="#b794ff" stroke="#111" stroke-width="4"/>
+<text x="60" y="698" font-size="18">DATABASE · SQLite (SQLAlchemy, Postgres/MySQL-ready)</text><text x="60" y="720" font-size="14" font-weight="700">users · departments · employees · leave_requests · performance_reviews · policy_documents · surveys · survey_responses · onboarding_tasks · attrition_scores · chat_messages · notifications</text></g>
+</g>
+<g stroke="#111" stroke-width="4" fill="none" marker-end="url(#a)"><path d="M594 236 V288"/><path d="M300 420 V478"/><path d="M880 420 V478"/><path d="M594 632 V668" marker-start="url(#a)"/></g>
+</svg>

@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusCorp Enterprise | Clayana 3D Workforce Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      /* CLAYANA 3D PALETTE */
+      --clay-bg: #eef2f9;
+      --clay-surface: #f4f7fc;
+      --clay-white: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-soft: rgba(255, 255, 255, 0.7);
+
+      /* CLAY THEME ACCENTS */
+      --clay-blue: #4f46e5;
+      --clay-blue-light: #e0e7ff;
+      --clay-mint: #059669;
+      --clay-mint-light: #d1fae5;
+      --clay-amber: #d97706;
+      --clay-amber-light: #fef3c7;
+      --clay-coral: #e11d48;
+      --clay-coral-light: #ffe4e6;
+      --clay-purple: #7c3aed;
+      --clay-purple-light: #ede9fe;
+
+      /* CLAYMORPHIC 3D SHADOW TOKENS */
+      --clay-shadow-card: 
+        16px 16px 32px rgba(166, 180, 204, 0.45), 
+        -12px -12px 28px rgba(255, 255, 255, 0.9), 
+        inset 4px 4px 8px rgba(255, 255, 255, 0.8), 
+        inset -4px -4px 8px rgba(166, 180, 204, 0.25);
+
+      --clay-shadow-button: 
+        8px 8px 18px rgba(79, 70, 229, 0.3), 
+        -4px -4px 12px rgba(255, 255, 255, 0.7), 
+        inset 3px 3px 5px rgba(255, 255, 255, 0.4), 
+        inset -3px -3px 5px rgba(0, 0, 0, 0.2);
+
+      --clay-shadow-input: 
+        inset 4px 4px 8px rgba(166, 180, 204, 0.35), 
+        inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+
+      --clay-shadow-pill: 
+        6px 6px 14px rgba(166, 180, 204, 0.3), 
+        -4px -4px 10px rgba(255, 255, 255, 0.85);
+
+      --clay-radius: 26px;
+      --clay-radius-sm: 16px;
+      --transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body {
+      background: var(--clay-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(224, 231, 255, 0.6) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(209, 250, 229, 0.5) 0%, transparent 45%);
+    }
+
+    /* CLAY 3D NAVBAR */
+    header.clay-nav {
+      background: rgba(244, 247, 252, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 1.1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 10px 25px rgba(166, 180, 204, 0.2);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .clay-brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #6366f1, #312e81);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 
+        6px 6px 14px rgba(49, 46, 129, 0.35), 
+        -4px -4px 10px rgba(255, 255, 255, 0.8),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.4),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.25);
+    }
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+    }
+    .brand-title span { color: var(--clay-blue); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    /* CLAY 3D BUTTONS */
+    .clay-btn {
+      border: none;
+      border-radius: 18px;
+      padding: 0.75rem 1.45rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: var(--transition);
+      outline: none;
+    }
+    .clay-btn:active {
+      transform: translateY(3px) scale(0.97);
+    }
+
+    .clay-btn-primary {
+      background: linear-gradient(145deg, #6366f1, #4338ca);
+      color: #ffffff;
+      box-shadow: var(--clay-shadow-button);
+    }
+    .clay-btn-primary:hover {
+      box-shadow: 
+        10px 10px 22px rgba(79, 70, 229, 0.4), 
+        -5px -5px 14px rgba(255, 255, 255, 0.8),
+        inset 3px 3px 6px rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .clay-btn-danger {
+      background: linear-gradient(145deg, #f43f5e, #be123c);
+      color: #ffffff;
+      box-shadow: 
+        8px 8px 18px rgba(225, 29, 72, 0.32), 
+        -4px -4px 12px rgba(255, 255, 255, 0.8),
+        inset 3px 3px 5px rgba(255, 255, 255, 0.4);
+    }
+
+    .clay-btn-secondary {
+      background: #f4f7fc;
+      color: #334155;
+      box-shadow: 
+        6px 6px 14px rgba(166, 180, 204, 0.35), 
+        -6px -6px 14px rgba(255, 255, 255, 0.9),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+    }
+    .clay-btn-secondary:hover {
+      color: var(--clay-blue);
+      transform: translateY(-2px);
+    }
+
+    .clay-btn-mint {
+      background: linear-gradient(145deg, #10b981, #047857);
+      color: #ffffff;
+      box-shadow: 
+        8px 8px 18px rgba(16, 185, 129, 0.32), 
+        -4px -4px 12px rgba(255, 255, 255, 0.8),
+        inset 3px 3px 5px rgba(255, 255, 255, 0.4);
+    }
+
+    .clay-btn-purple {
+      background: linear-gradient(145deg, #8b5cf6, #6d28d9);
+      color: #ffffff;
+      box-shadow: 
+        8px 8px 18px rgba(139, 92, 246, 0.32), 
+        -4px -4px 12px rgba(255, 255, 255, 0.8),
+        inset 3px 3px 5px rgba(255, 255, 255, 0.4);
+    }
+
+    /* TOP NAV DYNAMIC BUTTONS */
+    .btn-nav-signout { display: none; }
+    .btn-nav-changepw { display: none; }
+
+    /* ROLE DROPDOWN IN CLAY 3D */
+    .clay-dropdown {
+      position: absolute;
+      top: calc(100% + 14px);
+      right: 0;
+      width: 320px;
+      background: #f4f7fc;
+      border-radius: var(--clay-radius);
+      box-shadow: var(--clay-shadow-card);
+      padding: 1rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 250;
+      border: 2px solid #ffffff;
+    }
+    .clay-dropdown.show { display: flex; animation: clayPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes clayPop {
+      from { opacity: 0; transform: scale(0.9) translateY(-10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .clay-dropdown-title {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.4rem 0.6rem;
+    }
+    .clay-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.85rem 1rem;
+      border-radius: 18px;
+      background: #f8fafc;
+      box-shadow: 
+        4px 4px 10px rgba(166, 180, 204, 0.25), 
+        -4px -4px 10px rgba(255, 255, 255, 0.9),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    .clay-dropdown-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 14px rgba(166, 180, 204, 0.35), 
+        -4px -4px 10px rgba(255, 255, 255, 1);
+    }
+    .clay-dropdown-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    /* MAIN VIEWPORT */
+    main.clay-viewport {
+      flex: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem;
+      width: 100%;
+    }
+
+    /* FRONT LANDING PAGE (CLEAN, MINIMAL, NO GEN AI) */
+    .clay-hero {
+      text-align: center;
+      max-width: 840px;
+      margin: 1.5rem auto 3.5rem;
+    }
+    .clay-hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f4f7fc;
+      border-radius: 30px;
+      padding: 0.5rem 1.25rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--clay-blue);
+      box-shadow: var(--clay-shadow-pill);
+      margin-bottom: 1.5rem;
+      border: 1px solid #ffffff;
+    }
+    .clay-hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.85rem;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 1.2rem;
+    }
+    .clay-hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* CLAY 3D TILES GRID */
+    .clay-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+    .clay-tile-card {
+      background: var(--clay-white);
+      border-radius: var(--clay-radius);
+      padding: 2.25rem 2rem;
+      box-shadow: var(--clay-shadow-card);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      position: relative;
+    }
+    .clay-tile-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        20px 20px 40px rgba(166, 180, 204, 0.5), 
+        -16px -16px 32px rgba(255, 255, 255, 1);
+    }
+    .clay-tile-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      box-shadow: 
+        6px 6px 14px rgba(166, 180, 204, 0.35), 
+        -4px -4px 10px rgba(255, 255, 255, 0.9),
+        inset 3px 3px 5px rgba(255, 255, 255, 0.6);
+    }
+    .clay-tile-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .clay-tile-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .clay-tile-action {
+      margin-top: auto;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--clay-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* DASHBOARDS GENERAL */
+    .dashboard-view { display: none; }
+    .dashboard-view.active { display: block; animation: clayPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    /* DASHBOARD BANNER */
+    .clay-banner {
+      background: var(--clay-white);
+      border-radius: var(--clay-radius);
+      padding: 1.75rem 2.5rem;
+      box-shadow: var(--clay-shadow-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.25rem;
+      border: 2px solid #ffffff;
+    }
+    .clay-banner-title {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .clay-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      color: #fff;
+      box-shadow: 
+        6px 6px 14px rgba(0, 0, 0, 0.15), 
+        inset 3px 3px 6px rgba(255, 255, 255, 0.4);
+    }
+    .clay-banner-text h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .clay-banner-text p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* KPI ROW */
+    .clay-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+    .clay-kpi-card {
+      background: var(--clay-white);
+      border-radius: var(--clay-radius);
+      padding: 1.75rem 2rem;
+      box-shadow: var(--clay-shadow-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      transition: var(--transition);
+    }
+    .clay-kpi-card:hover { transform: translateY(-4px); }
+    .clay-kpi-val h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0.35rem 0;
+    }
+    .clay-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      box-shadow: var(--clay-shadow-pill);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+    .badge-danger { background: var(--clay-coral-light); color: var(--clay-coral); }
+    .badge-mint { background: var(--clay-mint-light); color: var(--clay-mint); }
+    .badge-amber { background: var(--clay-amber-light); color: var(--clay-amber); }
+    .badge-blue { background: var(--clay-blue-light); color: var(--clay-blue); }
+
+    /* CLAY CARDS */
+    .clay-card {
+      background: var(--clay-white);
+      border-radius: var(--clay-radius);
+      padding: 2.25rem;
+      box-shadow: var(--clay-shadow-card);
+      margin-bottom: 2.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+    }
+    .clay-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .clay-card-head h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* CLAY 3D DATA TABLES */
+    .table-wrap { overflow-x: auto; }
+    table.clay-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.65rem;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    table.clay-table th {
+      padding: 0.85rem 1.25rem;
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    table.clay-table td {
+      padding: 1.15rem 1.25rem;
+      background: #f8fafc;
+      color: #1e293b;
+      vertical-align: middle;
+      border-top: 1px solid rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.9);
+      transition: var(--transition);
+    }
+    table.clay-table tr td:first-child {
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
+      border-left: 2px solid #ffffff;
+    }
+    table.clay-table tr td:last-child {
+      border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px;
+      border-right: 2px solid #ffffff;
+    }
+    table.clay-table tr:hover td {
+      background: #eef2f9;
+      transform: translateY(-2px);
+    }
+
+    /* CLAY 3D INPUT CONTROLS */
+    .clay-input-group { margin-bottom: 1.25rem; }
+    .clay-input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.45rem;
+    }
+    .clay-input, .clay-select, .clay-textarea {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--clay-radius-sm);
+      background: #f8fafc;
+      box-shadow: var(--clay-shadow-input);
+      font-size: 0.92rem;
+      outline: none;
+      transition: var(--transition);
+      color: #1e293b;
+    }
+    .clay-input:focus, .clay-select:focus, .clay-textarea:focus {
+      border-color: var(--clay-blue);
+      background: #ffffff;
+      box-shadow: 
+        inset 2px 2px 5px rgba(79, 70, 229, 0.2), 
+        0 0 0 4px rgba(79, 70, 229, 0.15);
+    }
+
+    /* CLAY 3D MODALS & DRAWERS */
+    .clay-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .clay-modal-overlay.active { display: flex; }
+    .clay-modal-box {
+      background: var(--clay-white);
+      border-radius: var(--clay-radius);
+      box-shadow: var(--clay-shadow-card);
+      width: 100%;
+      max-width: 780px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      border: 3px solid #ffffff;
+      animation: clayPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .clay-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .clay-modal-head h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .clay-close-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--clay-shadow-pill);
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+    .clay-close-btn:hover { color: var(--clay-coral); transform: scale(1.1); }
+
+    /* SLIDE-OVER LOGIN DRAWER */
+    .clay-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(6px);
+      z-index: 950;
+      display: none;
+      justify-content: flex-end;
+    }
+    .clay-drawer-overlay.active { display: flex; }
+    .clay-drawer-box {
+      width: 100%;
+      max-width: 480px;
+      background: var(--clay-white);
+      height: 100vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      box-shadow: -15px 0 40px rgba(166, 180, 204, 0.5);
+      border-left: 3px solid #ffffff;
+      animation: drawerSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes drawerSlide { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+    /* FOOTER */
+    footer.clay-footer {
+      background: rgba(244, 247, 252, 0.9);
+      border-top: 2px solid #ffffff;
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CLAY 3D NAVBAR -->
+  <header class="clay-nav">
+    <div class="brand-wrap" onclick="handleSignOut()">
+      <div class="clay-brand-icon"><i class="fa-solid fa-shapes"></i></div>
+      <div class="brand-title">NEXUS<span>CORP</span></div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- AUTHENTICATED ACTION BUTTONS -->
+      <button class="clay-btn clay-btn-secondary btn-nav-changepw" id="navChangePwBtn" onclick="openModal('modalChangePw')">
+        <i class="fa-solid fa-key"></i> Change Password
+      </button>
+      <button class="clay-btn clay-btn-danger btn-nav-signout" id="navSignOutBtn" onclick="handleSignOut()">
+        <i class="fa-solid fa-power-off"></i> Sign Out
+      </button>
+
+      <!-- PUBLIC SIGN IN BUTTON -->
+      <button class="clay-btn clay-btn-primary" id="loginTriggerBtn">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        <span>Sign In Portal</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
+      </button>
+
+      <!-- ROLE DROPDOWN -->
+      <div class="clay-dropdown" id="roleDropdown">
+        <div class="clay-dropdown-title">Select Authentication Role</div>
+        
+        <div class="clay-dropdown-item" onclick="openAuthDrawer('Admin', 'admin@talentpulse.local', 'Admin123!', 'admin')">
+          <div class="clay-dropdown-icon" style="background: var(--clay-coral-light); color: var(--clay-coral);"><i class="fa-solid fa-user-shield"></i></div>
+          <div>
+            <strong>Admin Console</strong>
+            <p style="font-size: 0.75rem; color: #64748b;">Global RBAC, DB & Risk Telemetry</p>
+          </div>
+        </div>
+
+        <div class="clay-dropdown-item" onclick="openAuthDrawer('HR Operations', 'hr@talentpulse.local', 'Hr123!', 'hr')">
+          <div class="clay-dropdown-icon" style="background: var(--clay-purple-light); color: var(--clay-purple);"><i class="fa-solid fa-people-roof"></i></div>
+          <div>
+            <strong>HR Operations</strong>
+            <p style="font-size: 0.75rem; color: #64748b;">Attrition Risk, Onboarding & GenAI</p>
+          </div>
+        </div>
+
+        <div class="clay-dropdown-item" onclick="openAuthDrawer('Employee Self-Service', 'employee@talentpulse.local', 'Employee123!', 'employee')">
+          <div class="clay-dropdown-icon" style="background: var(--clay-blue-light); color: var(--clay-blue);"><i class="fa-solid fa-id-badge"></i></div>
+          <div>
+            <strong>Employee Self-Service</strong>
+            <p style="font-size: 0.75rem; color: #64748b;">Leave Balance & Feedback Hub</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CLAYANA VIEWPORT -->
+  <main class="clay-viewport">
+
+    <!-- ============================================================
+         1. PUBLIC CLEAN LANDING PAGE (STRICTLY 4 TILES - NO GEN AI)
+         ============================================================ -->
+    <div id="publicView">
+      <div class="clay-hero">
+        <div class="clay-hero-pill">
+          <i class="fa-solid fa-shield-halved"></i> ISO 27001 SECURE WORKFORCE GOVERNANCE
+        </div>
+        <h1>Human Capital Operations & Attrition Intelligence</h1>
+        <p>Access official organizational guidelines, leave allocations, holiday calendars, and data governance policies through tactile 3D information modules.</p>
+      </div>
+
+      <div class="clay-tiles-grid">
+        <!-- TILE 1 -->
+        <div class="clay-tile-card" onclick="openModal('modalAbout')">
+          <div class="clay-tile-icon" style="background: #e0e7ff; color: #4f46e5;">
+            <i class="fa-solid fa-building"></i>
+          </div>
+          <h3>About NexusCorp</h3>
+          <p>Global cloud engineering centers, organizational leadership, and international IT infrastructure.</p>
+          <div class="clay-tile-action"><span>View Company Profile</span> <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+
+        <!-- TILE 2 -->
+        <div class="clay-tile-card" onclick="openModal('modalLeave')">
+          <div class="clay-tile-icon" style="background: #d1fae5; color: #059669;">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <h3>Leave Quotas & Policy</h3>
+          <p>Annual privilege leaves, casual time-off, sick days, maternity benefits, and carry-over limits.</p>
+          <div class="clay-tile-action"><span>View Leave Structure</span> <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+
+        <!-- TILE 3 -->
+        <div class="clay-tile-card" onclick="openModal('modalHoliday')">
+          <div class="clay-tile-icon" style="background: #fef3c7; color: #d97706;">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <h3>Company Holidays 2026</h3>
+          <p>Official public holidays, festive breaks, and compensatory off overtime regulations.</p>
+          <div class="clay-tile-action"><span>View Holiday Calendar</span> <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+
+        <!-- TILE 4 -->
+        <div class="clay-tile-card" onclick="openModal('modalPrivacy')">
+          <div class="clay-tile-icon" style="background: #ede9fe; color: #7c3aed;">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+          <h3>Privacy & Terms</h3>
+          <p>Employee data privacy safeguards, core shift hours, and compliance directives.</p>
+          <div class="clay-tile-action"><span>Read Terms & Privacy</span> <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         2. HR OPERATIONS DASHBOARD (ATTRITION RISK & GEN AI SUITE)
+         ============================================================ -->
+    <div id="hrDashboard" class="dashboard-view">
+      
+      <!-- Top Banner with Prominent Sign Out & Change Password -->
+      <div class="clay-banner">
+        <div class="clay-banner-title">
+          <div class="clay-avatar" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">
+            <i class="fa-solid fa-brain-circuit"></i>
+          </div>
+          <div class="clay-banner-text">
+            <h2>HR Intelligence & Attrition Risk Console</h2>
+            <p>Workforce Retention Intelligence • IBM HR Trained ML Model • Generative AI HR Suite</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="clay-btn clay-btn-secondary" onclick="openModal('modalChangePw')"><i class="fa-solid fa-key"></i> Password</button>
+          <button class="clay-btn clay-btn-danger" onclick="handleSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+        </div>
+      </div>
+
+      <!-- HR KPIs -->
+      <div class="clay-kpi-row">
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">WORKFORCE FLIGHT RISK</p>
+            <h2 style="color:#e11d48;">11.4%</h2>
+            <span class="clay-badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> 8 High Risk Flags</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#ffe4e6; color:#e11d48;"><i class="fa-solid fa-fire"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">PREDICTED RETENTION</p>
+            <h2 style="color:#059669;">88.6%</h2>
+            <span class="clay-badge badge-mint"><i class="fa-solid fa-arrow-trend-up"></i> +2.4% vs Target</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#d1fae5; color:#059669;"><i class="fa-solid fa-shield-heart"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">PENDING LEAVES</p>
+            <h2>3</h2>
+            <span class="clay-badge badge-amber"><i class="fa-solid fa-clock"></i> Action Required</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-envelope-open-text"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">ONBOARDING INVITES</p>
+            <h2 id="hrOnboardCounter">4</h2>
+            <span class="clay-badge badge-blue"><i class="fa-solid fa-link"></i> Active Links</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-user-plus"></i></div>
+        </div>
+      </div>
+
+      <!-- EMPLOYEE ONBOARDING & JOIN INVITATION (SHARED BY HR & ADMIN) -->
+      <div class="clay-card">
+        <div class="clay-card-head">
+          <h3><i class="fa-solid fa-user-plus" style="color:var(--clay-blue);"></i> Candidate Onboarding & Join Invitation Link (HR & Admin Accessible)</h3>
+          <span class="clay-badge badge-blue"><i class="fa-solid fa-link"></i> Shareable Invite Link</span>
+        </div>
+        <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1.5rem;">
+          Enter candidate credentials to generate a secure join invitation link. Candidates can open this link on any device to register directly.
+        </p>
+
+        <form onsubmit="handleGenerateInvite(event, 'hr')" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.25rem; margin-bottom:1.5rem;">
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Full Name *</label>
+            <input type="text" id="candName_hr" required placeholder="e.g. Rachel Adams" class="clay-input">
+          </div>
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Candidate Email *</label>
+            <input type="email" id="candEmail_hr" required placeholder="rachel.adams@email.com" class="clay-input">
+          </div>
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Department *</label>
+            <select id="candDept_hr" class="clay-select">
+              <option>Engineering & Technology</option>
+              <option>Human Resources</option>
+              <option>Finance & Accounting</option>
+              <option>Product Operations</option>
+            </select>
+          </div>
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Start / Joining Date *</label>
+            <input type="date" id="candDate_hr" required class="clay-input">
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button type="submit" class="clay-btn clay-btn-primary" style="width:100%; height:48px;">
+              <i class="fa-solid fa-paper-plane"></i> Generate Join Link
+            </button>
+          </div>
+        </form>
+
+        <div id="inviteDisplay_hr" style="display:none; padding:1.25rem; background:#ecfdf5; border-radius:18px; box-shadow:var(--clay-shadow-pill); margin-bottom:1.5rem;">
+          <strong style="color:#065f46;"><i class="fa-solid fa-circle-check"></i> Candidate Invitation Link Generated:</strong>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:0.5rem; background:#fff; padding:0.65rem 1rem; border-radius:12px; font-family:monospace; font-size:0.85rem;">
+            <span id="inviteLink_hr" style="color:#047857; word-break:break-all;"></span>
+            <button onclick="copyLink('inviteLink_hr')" class="clay-btn clay-btn-mint" style="padding:0.4rem 0.85rem; font-size:0.75rem;"><i class="fa-solid fa-copy"></i> Copy</button>
+          </div>
+        </div>
+
+        <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.75rem; color:#1e293b;">Active Onboarding Pipeline</h4>
+        <div class="table-wrap">
+          <table class="clay-table">
+            <thead>
+              <tr><th>Candidate</th><th>Email</th><th>Department</th><th>Joining Date</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="onboardRoster_hr">
+              <tr>
+                <td><strong>Rachel Adams</strong></td><td>rachel.adams@email.com</td><td>Engineering & Technology</td><td>Nov 15, 2026</td>
+                <td><span class="clay-badge badge-mint">Invite Sent</span></td>
+                <td><button onclick="alert('Join link copied!')" class="clay-btn clay-btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;"><i class="fa-solid fa-link"></i> Copy</button></td>
+              </tr>
+              <tr>
+                <td><strong>Daniel Craig</strong></td><td>d.craig@email.com</td><td>Finance & Accounting</td><td>Nov 18, 2026</td>
+                <td><span class="clay-badge badge-amber">Pending Verification</span></td>
+                <td><button onclick="alert('Join link copied!')" class="clay-btn clay-btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;"><i class="fa-solid fa-link"></i> Copy</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ATTRITION RISK ROSTER (VISIBLE TO HR & ADMIN) -->
+      <div class="clay-card">
+        <div class="clay-card-head">
+          <h3><i class="fa-solid fa-chart-line-down" style="color:#e11d48;"></i> Predictive Employee Flight Risk Monitor (Scikit-Learn ML Model)</h3>
+          <span class="clay-badge badge-danger">Restricted to HR & Admin</span>
+        </div>
+        <div class="table-wrap">
+          <table class="clay-table">
+            <thead>
+              <tr><th>Employee</th><th>Department</th><th>Overtime</th><th>Risk Score</th><th>Risk Band</th><th>Top Driver</th><th>Diagnostics</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>David Vance</strong><br><span style="font-size:0.75rem; color:#64748b;">Backend Lead</span></td>
+                <td>Engineering</td>
+                <td><span class="clay-badge badge-danger">Frequent</span></td>
+                <td><strong style="color:#e11d48; font-size:1.05rem;">0.84</strong></td>
+                <td><span class="clay-badge badge-danger">HIGH RISK</span></td>
+                <td>3.5 yrs promotion gap</td>
+                <td><button onclick="inspectRisk('David Vance', 'Engineering', '0.84', 'HIGH RISK', 'Promotion gap exceeding 3.5 years, 35+ hours monthly overtime, salary level in bottom quartile.')" class="clay-btn clay-btn-secondary" style="padding:0.4rem 0.85rem; font-size:0.78rem;">Inspect Risk</button></td>
+              </tr>
+              <tr>
+                <td><strong>Elena Rostova</strong><br><span style="font-size:0.75rem; color:#64748b;">QA Engineer</span></td>
+                <td>Engineering</td>
+                <td><span class="clay-badge badge-danger">Yes</span></td>
+                <td><strong style="color:#e11d48; font-size:1.05rem;">0.72</strong></td>
+                <td><span class="clay-badge badge-danger">HIGH RISK</span></td>
+                <td>Overtime Burnout</td>
+                <td><button onclick="inspectRisk('Elena Rostova', 'Engineering', '0.72', 'HIGH RISK', 'Consecutive overtime sprint cycles and negative trend in recent 3 review ratings.')" class="clay-btn clay-btn-secondary" style="padding:0.4rem 0.85rem; font-size:0.78rem;">Inspect Risk</button></td>
+              </tr>
+              <tr>
+                <td><strong>Marcus Brody</strong><br><span style="font-size:0.75rem; color:#64748b;">Finance Analyst</span></td>
+                <td>Finance</td>
+                <td><span class="clay-badge badge-amber">Occasional</span></td>
+                <td><strong style="color:#d97706; font-size:1.05rem;">0.48</strong></td>
+                <td><span class="clay-badge badge-amber">MEDIUM</span></td>
+                <td>Tenure (&lt; 1 Year)</td>
+                <td><button onclick="inspectRisk('Marcus Brody', 'Finance', '0.48', 'MEDIUM RISK', 'First-year onboarding transition period. Recommend 1-on-1 career path check.')" class="clay-btn clay-btn-secondary" style="padding:0.4rem 0.85rem; font-size:0.78rem;">Inspect Risk</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GENERATIVE AI SUITE (LOCATED ONLY INSIDE HR OPERATIONS) -->
+      <div class="clay-card" style="border: 3px solid rgba(139, 92, 246, 0.4);">
+        <div class="clay-card-head">
+          <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--clay-purple);"></i> Generative AI HR Intelligence Suite</h3>
+          <span class="clay-badge badge-purple"><i class="fa-solid fa-sparkles"></i> 3 GenAI Modules</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:2rem;">
+          
+          <!-- GenAI 1: RAG Helpdesk -->
+          <div style="background:#f8fafc; border-radius:20px; padding:1.5rem; box-shadow:var(--clay-shadow-pill);">
+            <h4 style="font-size:1rem; margin-bottom:0.4rem;"><i class="fa-solid fa-book-bookmark" style="color:#4f46e5;"></i> RAG Policy Semantic Q&A</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.85rem;">Retrieval-Augmented Generation over policy PDFs.</p>
+            <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+              <input type="text" id="ragQuery" placeholder="e.g. Carry forward limits for PL?" class="clay-input" style="padding:0.65rem 0.9rem; font-size:0.84rem;">
+              <button onclick="runRagPolicy()" class="clay-btn clay-btn-primary" style="padding:0.65rem 1rem; font-size:0.8rem;">Ask</button>
+            </div>
+            <div id="ragResult" style="background:#fff; border-radius:12px; padding:0.85rem; font-size:0.82rem; min-height:90px; color:#334155;">Ask a question above to retrieve cited policy answers...</div>
+          </div>
+
+          <!-- GenAI 2: Appraisal Drafter -->
+          <div style="background:#f8fafc; border-radius:20px; padding:1.5rem; box-shadow:var(--clay-shadow-pill);">
+            <h4 style="font-size:1rem; margin-bottom:0.4rem;"><i class="fa-solid fa-pen-nib" style="color:#7c3aed;"></i> AI Review Appraisal Drafter</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.85rem;">Synthesizes raw manager notes into 4 formal sections.</p>
+            <textarea id="reviewDraftInput" rows="2" class="clay-textarea" style="padding:0.65rem 0.9rem; font-size:0.82rem; margin-bottom:0.65rem;">Delivered API architecture redesign, improved test coverage to 92%, active mentorship.</textarea>
+            <button onclick="runReviewDraft()" class="clay-btn clay-btn-purple" style="width:100%; padding:0.65rem; font-size:0.82rem; margin-bottom:0.75rem;">Generate Appraisal</button>
+            <div id="reviewDraftResult" style="background:#fff; border-radius:12px; padding:0.85rem; font-size:0.8rem; max-height:110px; overflow-y:auto; color:#334155;">Click 'Generate Appraisal' to expand notes.</div>
+          </div>
+
+          <!-- GenAI 3: Sentiment NLP -->
+          <div style="background:#f8fafc; border-radius:20px; padding:1.5rem; box-shadow:var(--clay-shadow-pill);">
+            <h4 style="font-size:1rem; margin-bottom:0.4rem;"><i class="fa-solid fa-comments-dollar" style="color:#059669;"></i> Exit & Survey Sentiment NLP</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.85rem;">Categorizes burnout, compensation & growth themes.</p>
+            <textarea id="sentimentInput" rows="2" class="clay-textarea" style="padding:0.65rem 0.9rem; font-size:0.82rem; margin-bottom:0.65rem;">Weekend on-call shifts are causing burnout. Market compensation is higher elsewhere.</textarea>
+            <button onclick="runSentimentNLP()" class="clay-btn clay-btn-mint" style="width:100%; padding:0.65rem; font-size:0.82rem; margin-bottom:0.75rem;">Analyze Sentiment</button>
+            <div id="sentimentResult" style="background:#fff; border-radius:12px; padding:0.85rem; font-size:0.8rem; color:#334155;">Click 'Analyze Sentiment' to extract themes.</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================
+         3. ADMIN DASHBOARD (SYSTEM AUDIT & SHARED RISK TELEMETRY)
+         ============================================================ -->
+    <div id="adminDashboard" class="dashboard-view">
+      
+      <!-- Top Banner with Prominent Sign Out & Change Password -->
+      <div class="clay-banner">
+        <div class="clay-banner-title">
+          <div class="clay-avatar" style="background: linear-gradient(135deg, #f43f5e, #881337);">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div class="clay-banner-text">
+            <h2>Executive Administrator Command Center</h2>
+            <p>Global Security Infrastructure • Role-Based Access Control • Shared Workforce Risk Monitor</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="clay-btn clay-btn-secondary" onclick="openModal('modalChangePw')"><i class="fa-solid fa-key"></i> Password</button>
+          <button class="clay-btn clay-btn-danger" onclick="handleSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+        </div>
+      </div>
+
+      <!-- Admin KPIs -->
+      <div class="clay-kpi-row">
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">SECURITY LEVEL</p>
+            <h2 style="color:#059669;">256-bit</h2>
+            <span class="clay-badge badge-mint"><i class="fa-solid fa-lock"></i> Bcrypt Hashes</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#d1fae5; color:#059669;"><i class="fa-solid fa-key"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">FLIGHT RISK FLAGS</p>
+            <h2 style="color:#e11d48;">2 Anomalies</h2>
+            <span class="clay-badge badge-danger"><i class="fa-solid fa-circle-exclamation"></i> Overtime Spike</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#ffe4e6; color:#e11d48;"><i class="fa-solid fa-shield-virus"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">DATABASE USERS</p>
+            <h2>32</h2>
+            <span class="clay-badge badge-blue"><i class="fa-solid fa-database"></i> SQLite Active</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-users"></i></div>
+        </div>
+      </div>
+
+      <!-- ADMIN RISK MONITOR (ADMIN CAN ALSO SEE RISK) -->
+      <div class="clay-card">
+        <div class="clay-card-head">
+          <h3><i class="fa-solid fa-triangle-exclamation" style="color:#e11d48;"></i> High Vulnerability Flight Risk Overview (Admin Access)</h3>
+          <span class="clay-badge badge-danger">Executive Risk Feed</span>
+        </div>
+        <div class="table-wrap">
+          <table class="clay-table">
+            <thead>
+              <tr><th>Account</th><th>Department</th><th>Risk Score</th><th>Status</th><th>Security Action</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>David Vance</strong> (Backend Lead)</td><td>Engineering</td>
+                <td><strong style="color:#e11d48; font-size:1.05rem;">0.84 (High)</strong></td>
+                <td><span class="clay-badge badge-danger">Burnout Alert</span></td>
+                <td><button onclick="alert('Notification dispatched to HR Director.');" class="clay-btn clay-btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;">Notify HR</button></td>
+              </tr>
+              <tr>
+                <td><strong>Elena Rostova</strong> (QA Engineer)</td><td>Engineering</td>
+                <td><strong style="color:#e11d48; font-size:1.05rem;">0.72 (High)</strong></td>
+                <td><span class="clay-badge badge-danger">Workload Anomaly</span></td>
+                <td><button onclick="alert('Workload warning sent to Engineering VP.');" class="clay-btn clay-btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;">Notify VP</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADMIN CANDIDATE PROVISIONING & JOIN INVITATION -->
+      <div class="clay-card">
+        <div class="clay-card-head">
+          <h3><i class="fa-solid fa-user-plus" style="color:var(--clay-coral);"></i> Candidate Provisioning & Join Invitation Center (Admin Access)</h3>
+        </div>
+        <form onsubmit="handleGenerateInvite(event, 'admin')" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.25rem; margin-bottom:1.5rem;">
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Full Name *</label>
+            <input type="text" id="candName_admin" required placeholder="e.g. Liam Gallagher" class="clay-input">
+          </div>
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Corporate/Personal Email *</label>
+            <input type="email" id="candEmail_admin" required placeholder="liam.g@email.com" class="clay-input">
+          </div>
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Assigned Department *</label>
+            <select id="candDept_admin" class="clay-select">
+              <option>Engineering & Technology</option>
+              <option>Human Resources</option>
+              <option>Finance & Accounting</option>
+            </select>
+          </div>
+          <div class="clay-input-group" style="margin-bottom:0;">
+            <label>Start Date *</label>
+            <input type="date" id="candDate_admin" required class="clay-input">
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button type="submit" class="clay-btn clay-btn-danger" style="width:100%; height:48px;">
+              <i class="fa-solid fa-key"></i> Provision & Generate Link
+            </button>
+          </div>
+        </form>
+
+        <div id="inviteDisplay_admin" style="display:none; padding:1.25rem; background:#ecfdf5; border-radius:18px; box-shadow:var(--clay-shadow-pill); margin-bottom:1.5rem;">
+          <strong style="color:#065f46;"><i class="fa-solid fa-circle-check"></i> Account Provisioned & Join Link Generated:</strong>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:0.5rem; background:#fff; padding:0.65rem 1rem; border-radius:12px; font-family:monospace; font-size:0.85rem;">
+            <span id="inviteLink_admin" style="color:#047857; word-break:break-all;"></span>
+            <button onclick="copyLink('inviteLink_admin')" class="clay-btn clay-btn-mint" style="padding:0.4rem 0.85rem; font-size:0.75rem;"><i class="fa-solid fa-copy"></i> Copy</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================
+         4. EMPLOYEE SELF-SERVICE (RISK STRICTLY HIDDEN)
+         ============================================================ -->
+    <div id="employeeDashboard" class="dashboard-view">
+      
+      <!-- Top Banner with Prominent Sign Out & Change Password for Employee -->
+      <div class="clay-banner">
+        <div class="clay-banner-title">
+          <div class="clay-avatar" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+            <i class="fa-solid fa-id-badge"></i>
+          </div>
+          <div class="clay-banner-text">
+            <h2>Employee Self-Service Workspace</h2>
+            <p>Welcome, <strong>Alex Turner</strong> (Engineering & Technology)</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="clay-btn clay-btn-secondary" onclick="openModal('modalChangePw')"><i class="fa-solid fa-key"></i> Password</button>
+          <button class="clay-btn clay-btn-danger" onclick="handleSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+        </div>
+      </div>
+
+      <!-- Quotas -->
+      <div class="clay-kpi-row">
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">VACATION BALANCE</p>
+            <h2>18.5 <span style="font-size:0.9rem; color:#64748b;">Days</span></h2>
+            <span class="clay-badge badge-mint"><i class="fa-solid fa-umbrella-beach"></i> PL Accrued</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#d1fae5; color:#059669;"><i class="fa-solid fa-plane"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">SICK & CASUAL</p>
+            <h2>8.0 <span style="font-size:0.9rem; color:#64748b;">Days</span></h2>
+            <span class="clay-badge badge-amber"><i class="fa-solid fa-clock"></i> Valid Dec 31</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-briefcase-medical"></i></div>
+        </div>
+
+        <div class="clay-kpi-card">
+          <div class="clay-kpi-val">
+            <p style="font-size:0.75rem; font-weight:800; color:#64748b;">NEXT HOLIDAY</p>
+            <h2>Nov 15</h2>
+            <span class="clay-badge badge-blue"><i class="fa-solid fa-calendar-star"></i> Dev Diwali</span>
+          </div>
+          <div class="clay-tile-icon" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-calendar-star"></i></div>
+        </div>
+      </div>
+
+      <!-- Forms Grid -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
+        
+        <!-- Leave Apply -->
+        <div class="clay-card">
+          <div class="clay-card-head">
+            <h3><i class="fa-solid fa-calendar-plus" style="color:var(--clay-blue);"></i> Request Leave</h3>
+          </div>
+          <form onsubmit="event.preventDefault(); alert('Leave request submitted to HR Operations!'); this.reset();">
+            <div class="clay-input-group">
+              <label>Leave Type</label>
+              <select class="clay-select"><option>Privilege Leave (PL) — 18.5 Days Balance</option><option>Casual Leave (CL) — 8 Days Balance</option><option>Sick Leave (SL)</option></select>
+            </div>
+            <div class="clay-input-group">
+              <label>Leave Dates</label>
+              <input type="date" required class="clay-input">
+            </div>
+            <div class="clay-input-group">
+              <label>Reason / Handover Notes</label>
+              <textarea rows="3" required placeholder="Brief reason or sprint handover plan..." class="clay-textarea"></textarea>
+            </div>
+            <button type="submit" class="clay-btn clay-btn-primary" style="width:100%;"><i class="fa-solid fa-paper-plane"></i> Submit Leave Request</button>
+          </form>
+        </div>
+
+        <!-- Workplace Feedback -->
+        <div class="clay-card">
+          <div class="clay-card-head">
+            <h3><i class="fa-solid fa-comment-dots" style="color:var(--clay-mint);"></i> Submit Confidential Feedback</h3>
+          </div>
+          <form onsubmit="event.preventDefault(); alert('Confidential feedback delivered to HR!'); this.reset();">
+            <div class="clay-input-group">
+              <label>Feedback Category</label>
+              <select class="clay-select"><option>Workload & Sprint Balance</option><option>Compensation & Benefits</option><option>Work Environment & Culture</option></select>
+            </div>
+            <div class="clay-input-group">
+              <label>Your Feedback / Suggestions</label>
+              <textarea rows="5" required placeholder="Share your suggestions or concerns confidentially with HR..." class="clay-textarea"></textarea>
+            </div>
+            <button type="submit" class="clay-btn clay-btn-mint" style="width:100%;"><i class="fa-solid fa-paper-plane"></i> Send to HR</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL: CHANGE PASSWORD
+       ============================================================ -->
+  <div class="clay-modal-overlay" id="modalChangePw">
+    <div class="clay-modal-box" style="max-width: 480px;">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-key" style="color:var(--clay-blue);"></i> Change Password</h3>
+        <button class="clay-close-btn" onclick="closeModal('modalChangePw')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="event.preventDefault(); alert('Password updated successfully!'); closeModal('modalChangePw'); this.reset();">
+        <div class="clay-input-group"><label>Current Password</label><input type="password" required class="clay-input"></div>
+        <div class="clay-input-group"><label>New Password (min 8 chars)</label><input type="password" required class="clay-input"></div>
+        <div class="clay-input-group"><label>Confirm New Password</label><input type="password" required class="clay-input"></div>
+        <button type="submit" class="clay-btn clay-btn-primary" style="width:100%; margin-top:0.5rem;">Update Password</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: FORGOT PASSWORD
+       ============================================================ -->
+  <div class="clay-modal-overlay" id="modalForgotPw">
+    <div class="clay-modal-box" style="max-width: 480px;">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-lock-open" style="color:var(--clay-coral);"></i> Reset Password</h3>
+        <button class="clay-close-btn" onclick="closeModal('modalForgotPw')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1.25rem;">Enter your registered work email to receive a secure recovery token.</p>
+      <form onsubmit="event.preventDefault(); alert('Password recovery link dispatched to ' + document.getElementById('forgotEmail').value); closeModal('modalForgotPw'); this.reset();">
+        <div class="clay-input-group"><label>Work Email Address</label><input type="email" id="forgotEmail" required placeholder="name@talentpulse.local" class="clay-input"></div>
+        <button type="submit" class="clay-btn clay-btn-danger" style="width:100%; margin-top:0.5rem;">Send Reset Link</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: RISK INSPECTOR (HR & ADMIN)
+       ============================================================ -->
+  <div class="clay-modal-overlay" id="riskInspectorModal">
+    <div class="clay-modal-box">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-shield-virus" style="color:var(--clay-coral);"></i> Attrition Diagnostics & Risk Factor Attribution</h3>
+        <button class="clay-close-btn" onclick="closeModal('riskInspectorModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:2px solid #f1f5f9;">
+        <div>
+          <h2 id="inspectName" style="font-size:1.45rem; color:#0f172a;">Employee</h2>
+          <p id="inspectDept" style="font-size:0.85rem; color:#64748b;">Department</p>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem; font-weight:800; color:#64748b;">PREDICTED VULNERABILITY</div>
+          <h1 id="inspectScore" style="font-size:2.2rem; font-family:'Space Grotesk',sans-serif; color:var(--clay-coral);">0.00</h1>
+        </div>
+      </div>
+      <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.5rem;">Key Feature Attribution:</h4>
+      <div id="inspectExplanation" style="background:#f8fafc; border-radius:14px; padding:1.2rem; font-size:0.88rem; line-height:1.6; margin-bottom:1.5rem; box-shadow:var(--clay-shadow-pill);"></div>
+      <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.5rem;">Automated Retention Plan:</h4>
+      <div style="background:#ecfdf5; border-radius:14px; padding:1.2rem; font-size:0.88rem; color:#065f46; line-height:1.6; box-shadow:var(--clay-shadow-pill);">
+        • <strong>Compensation Review:</strong> Initiate out-of-cycle benchmark check.<br>
+        • <strong>Workload Rebalancing:</strong> Cap sprint on-call rotations.<br>
+        • <strong>1-on-1 Touchpoint:</strong> Executive retention meeting within 5 days.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODALS: FRONT PAGE 4 CARDS (ABOUT, LEAVE, HOLIDAYS, PRIVACY)
+       ============================================================ -->
+  <div class="clay-modal-overlay" id="modalAbout">
+    <div class="clay-modal-box">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-building" style="color:var(--clay-blue);"></i> About NexusCorp Enterprise</h3>
+        <button class="clay-close-btn" onclick="closeModal('modalAbout')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="font-size:0.92rem; line-height:1.7; color:#334155;">
+        <strong>NexusCorp Systems</strong> delivers mission-critical enterprise cloud architecture and workforce management operations.<br><br>
+        • <strong>Global Headcount:</strong> 2,840+ Engineers, Managers, and Designers.<br>
+        • <strong>Tech Centers:</strong> Visakhapatnam IT Center, Singapore, London, and San Francisco.<br>
+        • <strong>Core Values:</strong> Complete operational transparency, merit-based career milestones, and ISO 27001 data governance.
+      </p>
+    </div>
+  </div>
+
+  <div class="clay-modal-overlay" id="modalLeave">
+    <div class="clay-modal-box">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-calendar-check" style="color:var(--clay-mint);"></i> Leave Allocations & Structure</h3>
+        <button class="clay-close-btn" onclick="closeModal('modalLeave')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="table-wrap">
+        <table class="clay-table">
+          <thead>
+            <tr><th>Leave Type</th><th>Quota</th><th>Notice</th><th>Carry Forward</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Privilege Leave (PL)</strong></td><td>21 Days / Year</td><td>14 Days</td><td>Max 45 Days Roll</td></tr>
+            <tr><td><strong>Casual Leave (CL)</strong></td><td>8 Days / Year</td><td>24 Hours</td><td>Lapses Dec 31</td></tr>
+            <tr><td><strong>Sick Leave (SL)</strong></td><td>10 Days / Year</td><td>Same Day</td><td>Encashable on exit</td></tr>
+            <tr><td><strong>Maternity Leave</strong></td><td>26 Weeks</td><td>30 Days</td><td>100% Paid</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="clay-modal-overlay" id="modalHoliday">
+    <div class="clay-modal-box">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-calendar-days" style="color:var(--clay-amber);"></i> Corporate Holiday Calendar 2026</h3>
+        <button class="clay-close-btn" onclick="closeModal('modalHoliday')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="table-wrap">
+        <table class="clay-table">
+          <thead>
+            <tr><th>Date</th><th>Observance</th><th>Type</th><th>Compensation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>15 Nov 2026</strong></td><td>Dev Diwali & Guru Nanak Jayanti</td><td>National Gazetted</td><td>100% Paid</td></tr>
+            <tr><td><strong>25 Dec 2026</strong></td><td>Christmas Day</td><td>Global Festival Break</td><td>100% Paid</td></tr>
+            <tr><td><strong>01 Jan 2027</strong></td><td>New Year's Day</td><td>Corporate Holiday</td><td>100% Paid</td></tr>
+            <tr><td><strong>26 Jan 2027</strong></td><td>Republic Day</td><td>National Public Holiday</td><td>100% Paid</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="clay-modal-overlay" id="modalPrivacy">
+    <div class="clay-modal-box">
+      <div class="clay-modal-head">
+        <h3><i class="fa-solid fa-scale-balanced" style="color:var(--clay-purple);"></i> Privacy & Employment Terms</h3>
+        <button class="clay-close-btn" onclick="closeModal('modalPrivacy')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="font-size:0.92rem; line-height:1.7; color:#334155;">
+        <strong>1. Data Privacy:</strong> Employee evaluation telemetry and leave records are encrypted using AES-256 and never shared with third parties.<br><br>
+        <strong>2. Core Shift Hours:</strong> Standard collaborative hours are 10:00 AM to 4:00 PM local time across all engineering units.<br><br>
+        <strong>3. Overtime Policy:</strong> Emergency on-call shifts delivered during holidays receive 200% overtime pay or 1:1 Compensatory Off valid for 60 days.
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SLIDE-OVER AUTH DRAWER
+       ============================================================ -->
+  <div class="clay-drawer-overlay" id="drawerOverlay" onclick="if(event.target===this) closeDrawer();">
+    <div class="clay-drawer-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+        <h3 id="drawerTitle" style="font-family:'Space Grotesk',sans-serif; font-size:1.4rem;">Portal Login</h3>
+        <button class="clay-close-btn" onclick="closeDrawer()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="handleAuthSubmit(event)">
+        <div class="clay-input-group">
+          <label>Work Email Address</label>
+          <input type="email" id="authEmail" required class="clay-input">
+        </div>
+        <div class="clay-input-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <label style="margin-bottom:0;">Password / Key</label>
+            <a href="javascript:void(0)" onclick="closeDrawer(); openModal('modalForgotPw');" style="font-size:0.75rem; color:var(--clay-blue); text-decoration:none; font-weight:700;">Forgot Password?</a>
+          </div>
+          <input type="password" id="authPassword" required class="clay-input">
+        </div>
+        <button type="submit" class="clay-btn clay-btn-primary" style="width:100%; height:48px; margin-top:0.75rem;">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Dashboard
+        </button>
+      </form>
+
+      <div style="margin-top:2.5rem; padding:1.25rem; background:#f8fafc; border-radius:18px; box-shadow:var(--clay-shadow-pill); font-size:0.8rem; line-height:1.6;">
+        <strong><i class="fa-solid fa-circle-info"></i> Pre-configured Demo Accounts:</strong><br>
+        • Admin: <code>admin@talentpulse.local</code> (Admin123!)<br>
+        • HR: <code>hr@talentpulse.local</code> (Hr123!)<br>
+        • Employee: <code>employee@talentpulse.local</code> (Employee123!)
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="clay-footer">
+    <div>&copy; 2026 NexusCorp Enterprise Systems Inc. Visakhapatnam IT Center.</div>
+    <div style="display:flex; gap:1.5rem;">
+      <a href="javascript:void(0)" onclick="openModal('modalPrivacy')" style="color:var(--text-muted); text-decoration:none;">Privacy Standards</a>
+      <a href="javascript:void(0)" onclick="openModal('modalPrivacy')" style="color:var(--text-muted); text-decoration:none;">Terms of Service</a>
+      <a href="javascript:void(0)" onclick="openModal('modalLeave')" style="color:var(--text-muted); text-decoration:none;">Leave Policy</a>
+    </div>
+  </footer>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const loginTriggerBtn = document.getElementById('loginTriggerBtn');
+    const roleDropdown = document.getElementById('roleDropdown');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const navSignOutBtn = document.getElementById('navSignOutBtn');
+    const navChangePwBtn = document.getElementById('navChangePwBtn');
+
+    // Toggle Dropdown
+    loginTriggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      roleDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', () => roleDropdown.classList.remove('show'));
+
+    function openAuthDrawer(roleName, email, pwd, roleKey) {
+      roleDropdown.classList.remove('show');
+      document.getElementById('drawerTitle').innerText = roleName + ' Sign In';
+      document.getElementById('authEmail').value = email;
+      document.getElementById('authPassword').value = pwd;
+      drawerOverlay.classList.add('active');
+    }
+    function closeDrawer() { drawerOverlay.classList.remove('active'); }
+
+    // AUTH SUBMISSION
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      closeDrawer();
+
+      document.getElementById('publicView').style.display = 'none';
+      document.querySelectorAll('.dashboard-view').forEach(d => d.classList.remove('active'));
+
+      // Show Nav Sign Out and Change Password
+      navSignOutBtn.style.display = 'inline-flex';
+      navChangePwBtn.style.display = 'inline-flex';
+      loginTriggerBtn.style.display = 'none';
+
+      if (email.includes('admin')) {
+        document.getElementById('adminDashboard').classList.add('active');
+      } else if (email.includes('hr')) {
+        document.getElementById('hrDashboard').classList.add('active');
+      } else {
+        document.getElementById('employeeDashboard').classList.add('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // SIGN OUT EVERYWHERE
+    function handleSignOut() {
+      document.querySelectorAll('.dashboard-view').forEach(d => d.classList.remove('active'));
+      document.getElementById('publicView').style.display = 'block';
+      navSignOutBtn.style.display = 'none';
+      navChangePwBtn.style.display = 'none';
+      loginTriggerBtn.style.display = 'inline-flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ONBOARDING JOIN INVITATION (SHARED BY HR & ADMIN)
+    function handleGenerateInvite(e, role) {
+      e.preventDefault();
+      const name = document.getElementById('candName_' + role).value;
+      const dept = document.getElementById('candDept_' + role).value;
+      const date = document.getElementById('candDate_' + role).value;
+      const token = 'NEXUS-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+      const link = window.location.origin + '/?join_token=' + token + '&dept=' + encodeURIComponent(dept);
+
+      document.getElementById('inviteLink_' + role).innerText = link;
+      document.getElementById('inviteDisplay_' + role).style.display = 'block';
+
+      // Update Table
+      const hrRoster = document.getElementById('onboardRoster_hr');
+      if (hrRoster) {
+        const row = `<tr><td><strong>${name}</strong></td><td>candidate@email.com</td><td>${dept}</td><td>${date}</td><td><span class="clay-badge badge-mint">Invite Sent</span></td><td><button onclick="alert('Copied!')" class="clay-btn clay-btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;"><i class="fa-solid fa-link"></i> Copy</button></td></tr>`;
+        hrRoster.insertAdjacentHTML('afterbegin', row);
+      }
+
+      alert('Candidate registered and Join Invitation Link ready for ' + name);
+    }
+
+    function copyLink(id) {
+      const txt = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(txt).then(() => alert('Link copied to clipboard!'));
+    }
+
+    // RISK INSPECTOR
+    function inspectRisk(name, dept, score, band, explanation) {
+      document.getElementById('inspectName').innerText = name;
+      document.getElementById('inspectDept').innerText = dept + ' Department';
+      document.getElementById('inspectScore').innerText = score;
+      document.getElementById('inspectExplanation').innerText = explanation;
+      openModal('riskInspectorModal');
+    }
+
+    // GEN AI SUITE SIMULATION (ONLY IN HR)
+    function runRagPolicy() {
+      const q = document.getElementById('ragQuery').value;
+      const out = document.getElementById('ragResult');
+      out.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Retrieving grounded policy...';
+      setTimeout(() => {
+        out.innerHTML = `<strong>Answer:</strong> Employees accrue 21 Privilege Leaves (PL) annually. Up to 15 days roll over to next year with a maximum ceiling of 45 days.<br><span style="font-size:0.7rem; color:#6b7280;"><i class="fa-solid fa-bookmark"></i> Source: HR Policy Section 3.2</span>`;
+      }, 450);
+    }
+
+    function runReviewDraft() {
+      const notes = document.getElementById('reviewDraftInput').value;
+      const out = document.getElementById('reviewDraftResult');
+      out.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Synthesizing 4-section review...';
+      setTimeout(() => {
+        out.innerHTML = `<strong>1. Summary:</strong> Strong technical delivery: ${notes}<br><strong>2. Strengths:</strong> Architecture redesign and ownership.<br><strong>3. Growth:</strong> Cross-team delegation.<br><strong>4. Milestones:</strong> 95% sprint SLA velocity.`;
+      }, 450);
+    }
+
+    function runSentimentNLP() {
+      const out = document.getElementById('sentimentResult');
+      out.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Extracting themes...';
+      setTimeout(() => {
+        out.innerHTML = `<span class="clay-badge badge-danger">Burnout</span> <span class="clay-badge badge-amber">Compensation</span><br><strong>Action:</strong> Cap release sprint overtime and review market compensation band parity.`;
+      }, 450);
+    }
+
+    // MODAL CONTROL
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    window.addEventListener('click', (e) => {
+      if (e.target.classList.contains('clay-modal-overlay')) e.target.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

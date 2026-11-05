@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalentPulse AI — Employee Attrition & GenAI Helpdesk</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="logo-area" style="display: flex; align-items: center; gap: 12px;">
+      <h1>TalentPulse AI</h1>
+      <span class="logo-tag">Visakhapatnam IT Center</span>
+      <div style="display: flex; gap: 8px; margin-left: 10px;">
+        <a href="/db" target="_blank" style="font-size: 0.8rem; font-weight: 600; color: #2563eb; text-decoration: none; padding: 4px 8px; border: 1px solid #bfdbfe; border-radius: 4px; background: #eff6ff;">Database Viewer</a>
+        <a href="/docs" target="_blank" style="font-size: 0.8rem; font-weight: 600; color: #475569; text-decoration: none; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; background: #f8fafc;">Swagger Docs</a>
+      </div>
+    </div>
+    <div id="user-bar" class="user-bar" style="display: none;">
+      <span id="user-name"></span>
+      <span id="user-role-badge" class="role-badge"></span>
+      <span id="user-dept" style="color: var(--text-muted);"></span>
+      <button class="secondary" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Login Screen -->
+  <div id="login-container" class="container">
+    <div class="login-box">
+      <h2 style="margin-bottom: 8px;">Sign In to TalentPulse</h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        AI Attrition Prediction & GenAI HR Automation System
+      </p>
+
+      <div class="form-group">
+        <label>Select Demo Account (1-Click Fill):</label>
+        <div class="demo-pills">
+          <span class="demo-pill" onclick="fillLogin('admin@talentpulse.local', 'Admin123!')">Admin</span>
+          <span class="demo-pill" onclick="fillLogin('hr@talentpulse.local', 'Hr123!')">HR Lead</span>
+          <span class="demo-pill" onclick="fillLogin('manager@talentpulse.local', 'Manager123!')">Manager (SWE)</span>
+          <span class="demo-pill" onclick="fillLogin('employee@talentpulse.local', 'Employee123!')">Employee (Kavya)</span>
+          <span class="demo-pill" onclick="fillLogin('manager2@talentpulse.local', 'Manager123!')">QA Manager</span>
+        </div>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" required placeholder="name@talentpulse.local">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" id="btn-login" style="width: 100%;">Sign In</button>
+        <div id="login-error" style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Authenticated Portal -->
+  <main id="app-container" class="container" style="display: none;">
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-nav" id="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-home')">Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('tab-leave')">Leave Management</button>
+      <button class="tab-btn" onclick="switchTab('tab-reviews')">Performance Reviews</button>
+      <button class="tab-btn" onclick="switchTab('tab-helpdesk')">Policy Helpdesk (GenAI)</button>
+      <button class="tab-btn tab-manager-only" id="nav-attrition" onclick="switchTab('tab-attrition')">Attrition Risk (AI 1)</button>
+      <button class="tab-btn tab-manager-only" id="nav-flags" onclick="switchTab('tab-flags')">Performance Flags (AI 2)</button>
+      <button class="tab-btn tab-hr-only" id="nav-metrics" onclick="switchTab('tab-metrics')">Workforce Metrics</button>
+      <button class="tab-btn" onclick="switchTab('tab-org')">Org & Policies</button>
+    </nav>
+
+    <!-- Tab 1: Dashboard / Home -->
+    <section id="tab-home" class="tab-content">
+      <div class="kpi-row" id="home-kpi-row">
+        <!-- Rendered dynamically based on role -->
+      </div>
+
+      <!-- Employee Onboarding Section (shown for employee) -->
+      <div id="employee-onboarding-card" class="card" style="display: none;">
+        <h2>My Onboarding Checklist <span id="onboarding-progress-badge" class="badge badge-pending"></span></h2>
+        <div id="onboarding-tasks-list">Loading tasks...</div>
+      </div>
+
+      <!-- Profile Overview Card -->
+      <div class="card">
+        <h2>My Profile & Reporting Alignment</h2>
+        <div class="card-grid" id="profile-details-grid">
+          <div>Loading profile...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Leave Management -->
+    <section id="tab-leave" class="tab-content" style="display: none;">
+      <div class="card-grid" style="grid-template-columns: 1fr 2fr;">
+        <!-- Apply Leave Form -->
+        <div class="card">
+          <h2>Apply for Leave</h2>
+          <form id="leave-form" onsubmit="handleApplyLeave(event)">
+            <div class="form-group">
+              <label>Leave Type</label>
+              <select id="leave-type" required>
+                <option value="Casual Leave">Casual Leave (CL)</option>
+                <option value="Sick Leave">Sick Leave (SL)</option>
+                <option value="Earned Leave">Earned Leave (EL)</option>
+                <option value="Paternity Leave">Paternity Leave</option>
+                <option value="Maternity Leave">Maternity Leave</option>
+                <option value="Unpaid Leave">Unpaid Leave</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Start Date</label>
+              <input type="date" id="leave-start" required>
+            </div>
+            <div class="form-group">
+              <label>End Date</label>
+              <input type="date" id="leave-end" required>
+            </div>
+            <div class="form-group">
+              <label>Reason</label>
+              <textarea id="leave-reason" required placeholder="Specify reason..."></textarea>
+            </div>
+            <button type="submit" id="btn-apply-leave">Submit Leave Request</button>
+            <div id="leave-feedback" style="margin-top: 10px; font-size: 0.85rem;"></div>
+          </form>
+        </div>
+
+        <!-- Leave Tables -->
+        <div>
+          <!-- Manager Team Approvals Card (Managers & HR only) -->
+          <div id="team-leaves-card" class="card" style="display: none;">
+            <h2>Team Leave Approvals Queue</h2>
+            <div id="team-leaves-table-container">Loading approvals...</div>
+          </div>
+
+          <!-- My Leave History -->
+          <div class="card">
+            <h2>My Leave History</h2>
+            <div id="my-leaves-table-container">Loading leave records...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Performance Reviews & AI Draft -->
+    <section id="tab-reviews" class="tab-content" style="display: none;">
+      <div class="card" id="conduct-review-card" style="display: none;">
+        <h2>Conduct Performance Appraisal & AI Drafting</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+          Use GenAI to convert manager bullet notes into structured performance evaluations.
+        </p>
+        <form id="review-conduct-form" onsubmit="handleSaveReview(event)">
+          <div class="card-grid">
+            <div class="form-group">
+              <label>Select Team Employee</label>
+              <select id="review-employee-select" required onchange="handleSelectReviewEmployee()"></select>
+            </div>
+            <div class="form-group">
+              <label>Review Cycle</label>
+              <select id="review-cycle-select" required>
+                <option value="2025-H1">2025-H1 (Current Cycle)</option>
+                <option value="2024-H2">2024-H2</option>
+                <option value="2024-H1">2024-H1</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Rating (1 to 5)</label>
+              <select id="review-rating-select" required>
+                <option value="5">5 - Outstanding Exceeds</option>
+                <option value="4">4 - Strong Exceeds</option>
+                <option value="3" selected>3 - Fully Met Expectations</option>
+                <option value="2">2 - Partially Met Expectations</option>
+                <option value="1">1 - Unsatisfactory (PIP Required)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- GenAI 2 Bullet Notes & AI Draft Button -->
+          <div class="form-group">
+            <label>Manager's Rough Bullet Notes</label>
+            <textarea id="review-bullet-notes" placeholder="- Delivered API migration early&#10;- High test coverage&#10;- Needs better standup communication&#10;- Goal: Lead microservice refactoring"></textarea>
+            <div style="margin-top: 6px;">
+              <button type="button" class="secondary" id="btn-ai-draft" onclick="handleGenerateAIDraft()">
+                ✨ Generate AI Review Draft (GenAI 2)
+              </button>
+              <span id="ai-draft-status" style="font-size: 0.85rem; margin-left: 10px; color: var(--text-muted);"></span>
+            </div>
+          </div>
+
+          <!-- Editable Structured Appraisal Fields -->
+          <div class="form-group">
+            <label>Overall Performance Narrative (Editable)</label>
+            <textarea id="review-narrative" rows="3" placeholder="AI draft narrative will appear here..."></textarea>
+          </div>
+          <div class="card-grid">
+            <div class="form-group">
+              <label>Strengths</label>
+              <textarea id="review-strengths" rows="3" placeholder="Key strengths..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Areas for Growth</label>
+              <textarea id="review-growth" rows="3" placeholder="Development opportunities..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Next Goals & Milestones</label>
+              <textarea id="review-goals" rows="3" placeholder="Measurable goals..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-save-review">Save Performance Appraisal</button>
+        </form>
+      </div>
+
+      <!-- Historical Reviews List -->
+      <div class="card">
+        <h2>Performance Review History</h2>
+        <div id="reviews-history-container">Loading reviews...</div>
+      </div>
+    </section>
+
+    <!-- Tab 4: GenAI HR Policy Helpdesk (RAG) -->
+    <section id="tab-helpdesk" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>HR Policy Assistant (GenAI RAG with TF-IDF Vector Retrieval)</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+          Ask any question regarding leave allowances, health benefits, hybrid schedules, and travel reimbursements.
+          Answers are grounded directly in company policy documents with source citations.
+        </p>
+
+        <div class="chat-box">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-message chat-bot">
+              Hello! I am your TalentPulse HR Helpdesk Assistant. Ask me anything about our Visakhapatnam center policies!
+            </div>
+          </div>
+          <form class="chat-input-row" onsubmit="handleSendChat(event)">
+            <input type="text" id="chat-query" placeholder="e.g. How many days of paternity leave do I get? Or what is the medical insurance cover?" required>
+            <button type="submit" id="btn-chat-send">Ask Policy</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: AI Attrition Intelligence (HARD RULE Protected) -->
+    <section id="tab-attrition" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>
+          <span>Workforce Attrition Risk Intelligence (AI 1)</span>
+          <button class="secondary" id="btn-recompute-attrition" onclick="handleRecomputeAttrition()">
+            ⚡ Recompute Batch ML Scores
+          </button>
+        </h2>
+        <div class="notice-alert notice-info">
+          <strong>Access Rule Enforced:</strong> Attrition risk is accessible ONLY to HR/Admin and the employee's direct reporting manager. Unrelated managers and employees get 403 Forbidden.
+        </div>
+        <div id="attrition-view-container">Loading attrition intelligence...</div>
+      </div>
+    </section>
+
+    <!-- Tab 6: Performance Flags (AI 2) -->
+    <section id="tab-flags" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>
+          <span>Performance Trend Flagging (AI 2)</span>
+          <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">
+            Employees with 2+ consecutive declining appraisal cycles
+          </span>
+        </h2>
+        <div id="performance-flags-container">Loading performance alerts...</div>
+      </div>
+    </section>
+
+    <!-- Tab 7: Admin Workforce Metrics -->
+    <section id="tab-metrics" class="tab-content" style="display: none;">
+      <div class="kpi-row" id="admin-kpi-row">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h2>Headcount by Department</h2>
+          <div id="dept-metrics-table">Loading metrics...</div>
+        </div>
+        <div class="card">
+          <h2>Attrition Risk Breakdown</h2>
+          <div id="risk-metrics-chart">Loading risk distribution...</div>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h2>Leave Approval Trends</h2>
+          <div id="leave-metrics-summary">Loading leave trends...</div>
+        </div>
+        <div class="card">
+          <h2>Performance Appraisal Completion</h2>
+          <div id="review-metrics-summary">Loading review stats...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 8: Org & Policy Documents -->
+    <section id="tab-org" class="tab-content" style="display: none;">
+      <div class="card-grid">
+        <!-- Policy Upload (HR/Admin only) -->
+        <div class="card" id="policy-upload-card" style="display: none;">
+          <h2>Upload Policy Document (PDF/Text)</h2>
+          <form id="policy-upload-form" onsubmit="handlePolicyUpload(event)">
+            <div class="form-group">
+              <label>Policy Title</label>
+              <input type="text" id="policy-title" required placeholder="e.g. Remote Work and Internet Allowance Policy 2026">
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <input type="text" id="policy-category" required placeholder="e.g. Operations, Benefits, Leave">
+            </div>
+            <div class="form-group">
+              <label>Upload PDF Document (or paste text below)</label>
+              <input type="file" id="policy-file" accept=".pdf,.txt">
+            </div>
+            <div class="form-group">
+              <label>Raw Policy Text (if no file)</label>
+              <textarea id="policy-raw-text" placeholder="Paste document content..."></textarea>
+            </div>
+            <button type="submit" id="btn-upload-policy">Upload & Index Policy</button>
+            <div id="policy-feedback" style="font-size: 0.85rem; margin-top: 8px;"></div>
+          </form>
+        </div>
+
+        <!-- Available Policies List -->
+        <div class="card">
+          <h2>Company Policy Library</h2>
+          <div id="policies-list-container">Loading policies...</div>
+        </div>
+      </div>
+
+      <!-- Organizational Hierarchy -->
+      <div class="card">
+        <h2>Organizational Hierarchy Tree</h2>
+        <div id="hierarchy-tree-container">Loading hierarchy...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

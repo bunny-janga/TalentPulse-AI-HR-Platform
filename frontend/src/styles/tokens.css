@@ -1,0 +1,150 @@
+/* ==========================================================================
+   TalentPulse design tokens — NEOBRUTALISM.
+   Thick ink borders, hard offset shadows, flat saturated colour, no blur.
+   Light (cream paper) is the default; [data-theme="dark"] flips ink and paper.
+   Every colour that is used for text sits at >= 4.5:1 on its surface.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  /* Ink + paper: the whole style hangs on these two. */
+  --ink: #111111;
+  --paper: #fff4d6;
+  --card: #ffffff;
+  --card-2: #fff9e8;
+  --on-color: #111111;           /* text that sits on the saturated fills below */
+
+  /* Flat, saturated fills (identical in both themes; text on them is always ink). */
+  --c-yellow: #ffd23f;
+  --c-pink: #ff7ab8;
+  --c-blue: #62b6ff;
+  --c-green: #5be3a0;
+  --c-orange: #ff9a4d;
+  --c-purple: #b794ff;
+  --c-red: #ff5d62;
+  --c-lime: #c8f53a;
+
+  /* Legacy surface names, mapped so every old reference still resolves. */
+  --bg: var(--paper);
+  --bg-0: var(--paper);
+  --bg-1: var(--paper);
+  --bg-2: var(--card-2);
+  --surface: var(--card-2);
+  --surface-1: var(--card);
+  --surface-2: #fff0bd;
+  --surface-3: #ece4cc;
+  --surface-solid: var(--card);
+  --glass: var(--card);
+  --glass-strong: var(--card);
+  --border: var(--ink);
+  --border-strong: var(--ink);
+  --overlay: rgba(17, 17, 17, 0.62);
+
+  /* Text */
+  --text: #111111;
+  --text-2: #3a3a3a;
+  --text-3: #565656;
+  --text-dim: var(--text-3);
+  --text-muted: var(--text-3);
+  --muted: var(--text-2);
+
+  /* Brand + accent. --accent is a text-safe electric blue; --brand is the fill. */
+  --brand: var(--c-yellow);
+  --accent-1: #3d3dff;
+  --accent-2: var(--c-pink);
+  --accent-3: var(--c-blue);
+  --accent: #3a35e8;
+  --accent-soft: #dedcff;
+  --grad: var(--c-yellow);
+  --grad-btn: var(--c-yellow);
+  --hairline: var(--ink);
+
+  /* Semantic: fill / text / border (text values are the dark, readable ones). */
+  --ok: #0a8a4c;      --ok-text: #08623a;      --ok-bg: var(--c-green);   --ok-border: var(--ink);
+  --warn: #b45309;    --warn-text: #7a3a05;    --warn-bg: var(--c-yellow); --warn-border: var(--ink);
+  --danger: #cf1f2a;  --danger-text: #8f1219;  --danger-bg: var(--c-red);  --danger-border: var(--ink);
+  --info: #1558c0;    --info-text: #0e3f8f;    --info-bg: var(--c-blue);   --info-border: var(--ink);
+  --success: var(--ok);
+  --warning: var(--warn);
+  --neutral-bg: var(--card-2); --neutral-border: var(--ink);
+
+  /* Risk bands */
+  --risk-low: var(--c-green);
+  --risk-medium: var(--c-yellow);
+  --risk-high: var(--c-red);
+  --glow-low: none; --glow-medium: none; --glow-high: none;
+
+  /* Unused by the new look; kept so stale references stay harmless. */
+  --mesh-a: transparent; --mesh-b: transparent; --mesh-c: transparent;
+  --noise-opacity: 0;
+
+  /* 8px spacing grid */
+  --s-0: 4px;  --s-1: 8px;  --s-2: 16px; --s-3: 24px; --s-4: 32px;
+  --s-5: 40px; --s-6: 48px; --s-8: 64px; --s-10: 80px; --s-12: 96px;
+
+  /* Type: heavy, grotesque, system-only (no CDN fonts). */
+  --fs-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);
+  --fs-sm: clamp(0.8125rem, 0.79rem + 0.12vw, 0.9rem);
+  --fs-base: clamp(0.9375rem, 0.91rem + 0.15vw, 1.0625rem);
+  --fs-md: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --fs-lg: clamp(1.3rem, 1.1rem + 0.8vw, 1.75rem);
+  --fs-xl: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem);
+  --fs-2xl: clamp(2.2rem, 1.5rem + 2.8vw, 3.8rem);
+  --fs-display: clamp(2.8rem, 1.6rem + 5vw, 6rem);
+  --font-sans: "Space Grotesk", "Archivo", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* Radius: nearly square. */
+  --r-1: 2px; --r-2: 4px; --r-3: 6px; --r-4: 8px; --r-5: 12px; --r-pill: 999px;
+
+  /* Border weight + hard shadows (zero blur, always). */
+  --bw: 3px;
+  --bw-thin: 2px;
+  --sh-1: 3px 3px 0 var(--ink);
+  --sh-2: 5px 5px 0 var(--ink);
+  --sh-3: 8px 8px 0 var(--ink);
+  --sh-press: 0 0 0 var(--ink);
+  --glow-accent: var(--sh-2);
+  --inner-glow: none;
+
+  /* Motion: snappy, no spring blur. */
+  --ease-out-expo: cubic-bezier(0.2, 0.9, 0.25, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --d-instant: 90ms; --d-fast: 150ms; --d-base: 240ms; --d-slow: 420ms;
+
+  /* Layout */
+  --sidebar-w: 268px;
+  --sidebar-w-collapsed: 84px;
+  --topbar-h: 76px;
+  --tabbar-h: 68px;
+  --content-max: 1280px;
+  --z-nav: 40; --z-top: 50; --z-overlay: 80; --z-toast: 100;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #f6f0dc;                /* borders and shadows become cream on charcoal */
+  --paper: #15151b;
+  --card: #1f1f28;
+  --card-2: #272733;
+  --on-color: #111111;
+
+  --surface-2: #2c2c3a;
+  --surface-3: #363648;
+  --overlay: rgba(0, 0, 0, 0.72);
+
+  --text: #f6f0dc;
+  --text-2: #d3cdb8;
+  --text-3: #b0aa96;
+
+  --accent: #a9b8ff;
+  --accent-soft: #2d2f66;
+
+  --ok: #5be3a0;      --ok-text: #8ff0bf;
+  --warn: #ffd23f;    --warn-text: #ffe27a;
+  --danger: #ff8084;  --danger-text: #ffadb0;
+  --info: #8ec9ff;    --info-text: #b6dcff;
+}
+
+@media (min-width: 2200px) { :root { --content-max: 1680px; } }

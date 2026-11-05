@@ -1,0 +1,30 @@
+/* Page-level layout helpers shared by the feature screens. */
+.split { display: grid; grid-template-columns: minmax(0, var(--l, 1.7fr)) minmax(0, var(--r, 1fr)); gap: var(--s-3); align-items: start; }
+@media (max-width: 1280px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-3); padding-bottom: var(--s-2); border-bottom: var(--bw-thin) dashed var(--ink); }
+.card-head h2 { font-size: var(--fs-md); }
+.cell-name { font-weight: 800; }
+.cell-sub { font-size: var(--fs-xs); color: var(--text-3); font-family: var(--font-mono); }
+.prose-block { white-space: pre-wrap; line-height: 1.65; }
+.box { padding: var(--s-2); border: var(--bw-thin) solid var(--ink); background: var(--card-2); }
+.box--accent { background: var(--c-yellow); color: #111; box-shadow: var(--sh-1); }
+.box--accent .dim, .box--accent .muted { color: #2b2b2b; }
+.scroll-y { max-height: 520px; overflow: auto; }
+.bar-row { display: grid; grid-template-columns: minmax(110px, 200px) minmax(80px, 1fr) auto; gap: var(--s-2); align-items: center; }
+.empty-cell { text-align: center; padding: var(--s-5) var(--s-2) !important; color: var(--text-3); font-weight: 700; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.kbd-hint { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-3); }
+.chat-bubble { max-width: min(78%, 640px); padding: 12px 16px; border: var(--bw) solid var(--ink); box-shadow: 4px 4px 0 var(--ink); overflow-wrap: anywhere; }
+.chat-bubble--user { align-self: flex-end; background: var(--c-yellow); color: #111; }
+.chat-bubble--bot { align-self: flex-start; background: var(--card); }
+.risk-dot { display: inline-block; width: 14px; height: 14px; border: var(--bw-thin) solid var(--ink); border-radius: 50%; }
+.risk-dot--LOW { background: var(--c-green); } .risk-dot--MEDIUM { background: var(--c-yellow); } .risk-dot--HIGH { background: var(--c-red); }
+.star-row { display: inline-flex; gap: 2px; }
+.star-row .on { color: #111; fill: var(--c-yellow); }
+.star-row .off { color: var(--text-3); fill: none; opacity: 0.5; }
+.org-tree, .org-children { list-style: none; padding: 0; margin: 0; }
+.org-children { margin-left: 22px; padding-left: 18px; border-left: var(--bw) solid var(--ink); }
+
+.table td .row { flex-wrap: nowrap; }
+.table td .cell-name { white-space: nowrap; }
+.page__head .row { justify-content: flex-end; }
