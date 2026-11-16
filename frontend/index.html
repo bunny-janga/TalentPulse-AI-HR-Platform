@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalentPulse AI — Workforce Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { margin: 0; background: #030712; color: #f8fafc; overflow-x: hidden; }
+    #webgl-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .glass-3d {
+      background: rgba(11, 17, 34, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transform-style: preserve-3d;
+      transition: transform 0.14s ease-out;
+    }
+    .btn-3d {
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      box-shadow: 0 10px 24px -6px rgba(6, 182, 212, 0.55), 0 4px 0 #1e1b4b;
+      transition: all 0.15s ease;
+    }
+    .btn-3d:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -6px rgba(56, 189, 248, 0.75), 0 6px 0 #1e1b4b; }
+    .btn-3d:active { transform: translateY(3px); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.5), 0 1px 0 #1e1b4b; }
+    .role-chip { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(15, 23, 42, 0.55); transition: all 0.2s ease; }
+    .role-chip.active { border-color: #38bdf8; background: rgba(56, 189, 248, 0.22); box-shadow: 0 0 18px rgba(56, 189, 248, 0.35); color: #fff; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <canvas id="webgl-bg"></canvas>
+
+  <!-- LOGIN SCREEN -->
+  <main id="login-screen" class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
+    <div id="tilt-card" class="glass-3d w-full max-w-md rounded-3xl p-8 text-center">
+      <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-indigo-600 via-sky-500 to-cyan-300 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-sky-200 to-indigo-300 bg-clip-text text-transparent">
+        TalentPulse AI
+      </h1>
+      <p class="text-xs text-slate-400 mt-1 mb-5">
+        Workforce Operations & Retention Platform
+      </p>
+
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <button type="button" onclick="selectRole('Employee')" id="pill-Employee" class="role-chip active py-2 px-3 rounded-xl text-xs font-bold text-slate-200 cursor-pointer">Employee</button>
+        <button type="button" onclick="selectRole('Manager')" id="pill-Manager" class="role-chip py-2 px-3 rounded-xl text-xs font-bold text-slate-300 cursor-pointer">Manager</button>
+        <button type="button" onclick="selectRole('HR Executive')" id="pill-HR Executive" class="role-chip py-2 px-3 rounded-xl text-xs font-bold text-slate-300 cursor-pointer">HR Executive</button>
+        <button type="button" onclick="selectRole('Admin')" id="pill-Admin" class="role-chip py-2 px-3 rounded-xl text-xs font-bold text-slate-300 cursor-pointer">Admin</button>
+      </div>
+
+      <div class="space-y-3 text-left mb-4">
+        <div>
+          <label class="text-[11px] font-semibold text-slate-400">Work Email</label>
+          <input id="login-email" type="email" value="employee@talentpulse.ai" class="mt-1 w-full bg-slate-900/85 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <div class="flex justify-between items-center">
+            <label class="text-[11px] font-semibold text-slate-400">Password</label>
+            <button type="button" onclick="openModal('forgot-modal')" class="text-[11px] font-semibold text-cyan-400 hover:underline cursor-pointer">Forgot password?</button>
+          </div>
+          <input id="login-password" type="password" value="Emp@123" class="mt-1 w-full bg-slate-900/85 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400" onkeydown="if(event.key==='Enter') handleLogin()">
+        </div>
+      </div>
+
+      <p id="login-error" class="hidden text-xs text-rose-400 font-semibold mb-3"></p>
+
+      <button onclick="handleLogin()" class="btn-3d w-full py-3 rounded-xl font-extrabold text-white text-sm tracking-wide cursor-pointer">
+        Sign In
+      </button>
+
+      <p class="mt-5 text-[11px] text-slate-500">
+        By signing in, you agree to our
+        <button type="button" onclick="openModal('terms-modal')" class="text-slate-400 hover:text-cyan-300 underline cursor-pointer">Terms & MIT License</button>.
+      </p>
+    </div>
+  </main>
+
+  <!-- WORKSPACE -->
+  <section id="app-workspace" class="relative z-10 hidden min-h-screen flex flex-col">
+    <header class="glass-3d mx-4 mt-4 px-5 py-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <span class="font-extrabold text-base tracking-tight">TalentPulse AI</span>
+        <span id="header-user-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300"></span>
+      </div>
+
+      <nav id="dynamic-nav" class="flex flex-wrap items-center gap-1.5 text-xs font-bold"></nav>
+
+      <div class="flex items-center gap-2 text-xs font-bold">
+        <button id="btn-add-employee" onclick="openModal('onboard-modal')" class="hidden px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30 cursor-pointer">
+          + Add Employee
+        </button>
+        <button onclick="openModal('changepw-modal')" class="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white cursor-pointer">
+          Change Password
+        </button>
+        <button onclick="handleLogout()" class="px-3 py-1.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 cursor-pointer">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <div id="role-content" class="p-4 md:p-6 max-w-7xl w-full mx-auto flex-1 space-y-6"></div>
+
+    <footer class="mx-4 mb-4 px-6 py-3 rounded-2xl bg-slate-950/60 border border-slate-800/70 flex flex-wrap justify-between items-center text-[11px] text-slate-400">
+      <span>© 2026 TalentPulse AI • Team GG-13</span>
+      <div class="flex gap-4">
+        <button onclick="openModal('terms-modal')" class="hover:text-cyan-300 underline cursor-pointer">Terms & Conditions</button>
+        <button onclick="openModal('terms-modal')" class="hover:text-cyan-300 underline cursor-pointer">MIT License</button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- MODAL: FORGOT PASSWORD -->
+  <div id="forgot-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-3d w-full max-w-sm rounded-3xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-white">Reset Password</h3>
+        <button onclick="closeModal('forgot-modal')" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs text-slate-400">Select your role and enter your work email to set a new password.</p>
+      <select id="fp-role" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+        <option>Employee</option><option>Manager</option><option>HR Executive</option><option>Admin</option>
+      </select>
+      <input id="fp-email" type="email" placeholder="Work Email (e.g. employee@talentpulse.ai)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <input id="fp-newpw" type="password" placeholder="New Password (minimum 6 characters)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <p id="fp-msg" class="text-xs font-semibold"></p>
+      <button onclick="submitForgotPassword()" class="btn-3d w-full py-2.5 rounded-xl text-xs font-bold text-white cursor-pointer">Update Password</button>
+    </div>
+  </div>
+
+  <!-- MODAL: CHANGE PASSWORD -->
+  <div id="changepw-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-3d w-full max-w-sm rounded-3xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-white">Change Password</h3>
+        <button onclick="closeModal('changepw-modal')" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      </div>
+      <input id="cp-old" type="password" placeholder="Current Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <input id="cp-new" type="password" placeholder="New Password (minimum 6 characters)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <p id="cp-msg" class="text-xs font-semibold"></p>
+      <button onclick="submitChangePassword()" class="btn-3d w-full py-2.5 rounded-xl text-xs font-bold text-white cursor-pointer">Save New Password</button>
+    </div>
+  </div>
+
+  <!-- MODAL: ONBOARD NEW EMPLOYEE -->
+  <div id="onboard-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-3d w-full max-w-md rounded-3xl p-6 space-y-3.5">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-white">Add New Team Member</h3>
+        <button onclick="closeModal('onboard-modal')" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      </div>
+      <input id="ob-name" type="text" placeholder="Full Name (e.g. Karthikeya Naidu)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <input id="ob-email" type="email" placeholder="Work Email (e.g. karthikeya@talentpulse.ai)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <input id="ob-pass" type="password" placeholder="Temporary Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <div class="grid grid-cols-2 gap-2">
+        <select id="ob-role" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+          <option value="Employee">Employee</option>
+          <option value="Manager">Manager</option>
+          <option value="HR Executive">HR Executive</option>
+          <option value="Admin">Admin</option>
+        </select>
+        <select id="ob-dept" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+          <option>Cloud Engineering</option>
+          <option>QA Automation</option>
+          <option>Data & AI</option>
+          <option>Full-Stack Delivery</option>
+          <option>DevOps & SRE</option>
+          <option>HR & Operations</option>
+        </select>
+      </div>
+      <input id="ob-title" type="text" placeholder="Role Title (e.g. Cloud DevOps Engineer)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+      <p id="ob-msg" class="text-xs font-semibold"></p>
+      <button onclick="submitNewEmployee()" class="btn-3d w-full py-2.5 rounded-xl text-xs font-bold text-white cursor-pointer">Create Account</button>
+    </div>
+  </div>
+
+  <!-- MODAL: TERMS & MIT LICENSE -->
+  <div id="terms-modal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-3d w-full max-w-lg rounded-3xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-white">Terms of Use & MIT License</h3>
+        <button onclick="closeModal('terms-modal')" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      </div>
+      <div class="space-y-2.5 text-xs text-slate-300 max-h-72 overflow-y-auto pr-1 leading-relaxed">
+        <p><strong class="text-cyan-300">1. Data Access & Privacy:</strong> Attrition risk indicators are restricted to authorized Managers, HR Executives, and Administrators. Individual employees only see their own leave, appraisal, and policy records.</p>
+        <p><strong class="text-cyan-300">2. Responsible AI Usage:</strong> Retention scores are decision-support signals meant to help managers address workload or compensation gaps—never for automated disciplinary action.</p>
+        <p><strong class="text-cyan-300">3. Demonstration Dataset:</strong> Pre-loaded employee profiles use synthetic workforce data created for demonstration purposes.</p>
+        <p><strong class="text-cyan-300">4. MIT License:</strong> Copyright (c) 2026 TalentPulse AI Contributors (Team GG-13). Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files to deal in the Software without restriction under the MIT License.</p>
+      </div>
+      <button onclick="closeModal('terms-modal')" class="btn-3d w-full py-2.5 rounded-xl text-xs font-bold text-white cursor-pointer">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin.startsWith("http") ? window.location.origin : "http://127.0.0.1:8000";
+    let selectedRole = "Employee";
+    let currentUser = null;
+    let jwtToken = "";
+
+    const localUsers = [
+      { emp_code: "TPZ-EMP1", full_name: "Ananya Rao", email: "employee@talentpulse.ai", password: "Emp@123", role: "Employee", department: "Cloud Engineering", job_role: "Senior Engineer" },
+      { emp_code: "TPZ-MGR1", full_name: "Vikramaditya Varma", email: "manager@talentpulse.ai", password: "Mgr@123", role: "Manager", department: "Cloud Engineering", job_role: "Engineering Manager" },
+      { emp_code: "TPZ-HR01", full_name: "Meera Nair", email: "hr@talentpulse.ai", password: "Hr@123", role: "HR Executive", department: "HR & Operations", job_role: "Lead HRBP" },
+      { emp_code: "TPZ-ADM1", full_name: "Kranthi Kumar", email: "admin@talentpulse.ai", password: "Admin@123", role: "Admin", department: "IT Governance", job_role: "System Admin" }
+    ];
+
+    const roleDefaults = {
+      "Employee": { email: "employee@talentpulse.ai", pass: "Emp@123" },
+      "Manager": { email: "manager@talentpulse.ai", pass: "Mgr@123" },
+      "HR Executive": { email: "hr@talentpulse.ai", pass: "Hr@123" },
+      "Admin": { email: "admin@talentpulse.ai", pass: "Admin@123" }
+    };
+
+    const teamMembers = [
+      { emp_code: "TPZ-1001", full_name: "Rohan Kulkarni", department: "Cloud Engineering", job_role: "Senior Engineer", risk: 84.2, hours: 212, hike: 21, eng: 2.5, wfh: 1, perf: 4.1 },
+      { emp_code: "TPZ-1002", full_name: "Divya Reddy", department: "QA Automation", job_role: "Software Engineer", risk: 76.5, hours: 198, hike: 17, eng: 2.8, wfh: 0, perf: 4.3 },
+      { emp_code: "TPZ-1003", full_name: "Siddharth Menon", department: "Data & AI", job_role: "Tech Lead", risk: 63.0, hours: 190, hike: 16, eng: 3.1, wfh: 2, perf: 4.5 },
+      { emp_code: "TPZ-EMP1", full_name: "Ananya Rao", department: "Cloud Engineering", job_role: "Senior Engineer", risk: 16.4, hours: 174, hike: 9, eng: 4.3, wfh: 2, perf: 4.6 }
+    ];
+
+    const leavesData = [
+      { id: 1, emp: "Ananya Rao (TPZ-EMP1)", type: "Earned Leave", dates: "Nov 24–27, 2026", reason: "Family wedding", status: "Pending" },
+      { id: 2, emp: "Divya Reddy (TPZ-1002)", type: "Sick Leave", dates: "Nov 18, 2026", reason: "Medical rest", status: "Approved" }
+    ];
+
+    const policiesData = [
+      { title: "Leave & Holiday Policy 2026", content: "12 Casual Leaves, 10 Sick Leaves, and 15 Earned Leaves/year. Earned leaves carry forward up to 30 days." },
+      { title: "Visakhapatnam Hybrid Work Policy", content: "3 days in-office (Tue–Thu) and 2 days WFH. Staff commuting >20 km qualify for 4-day WFH." },
+      { title: "Group Medical & Wellness Cover", content: "₹5,00,000 cashless family floater + ₹1,00,000 OPD & mental wellness wallet." }
+    ];
+
+    const updatesData = [
+      { title: "H2 2026 Appraisal Cycle Open", body: "Self-appraisals and peer 360 nominations are now live through Nov 30.", date: "Nov 15, 2026" },
+      { title: "Visakhapatnam Campus Electric Shuttle", body: "New express shuttle routes added from MVP Colony & Gajuwaka to Rushikonda IT Park.", date: "Nov 12, 2026" }
+    ];
+
+    const surveysData = [
+      { dept: "Cloud Engineering", text: "Release sprints are intense; hybrid WFH flexibility helps reduce burnout.", sentiment: "Mixed (54%)" },
+      { dept: "QA Automation", text: "Compensation growth feels slow despite heavy overtime.", sentiment: "Negative (21%)" },
+      { dept: "Data & AI", text: "Great mentorship and GPU tooling, very happy with culture.", sentiment: "Positive (91%)" }
+    ];
+
+    const departmentsData = [
+      { name: "Cloud Engineering", lead: "Vikramaditya Varma", count: 312 },
+      { name: "QA Automation", lead: "Suresh Menon", count: 216 },
+      { name: "Data & AI", lead: "Priya Naidu", count: 240 },
+      { name: "Full-Stack Delivery", lead: "Karthik Iyer", count: 240 },
+      { name: "DevOps & SRE", lead: "Nikhil Sharma", count: 120 },
+      { name: "HR & Operations", lead: "Meera Nair", count: 72 }
+    ];
+
+    function selectRole(role) {
+      selectedRole = role;
+      document.querySelectorAll(".role-chip").forEach(c => c.classList.remove("active"));
+      document.getElementById("pill-" + role).classList.add("active");
+      document.getElementById("login-email").value = roleDefaults[role].email;
+      document.getElementById("login-password").value = roleDefaults[role].pass;
+      document.getElementById("login-error").classList.add("hidden");
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+    async function handleLogin() {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      const errEl = document.getElementById("login-error");
+
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role: selectedRole })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          jwtToken = data.access_token;
+          currentUser = { name: data.name, email, role: data.role, emp_code: data.emp_code, department: data.department };
+          enterWorkspace();
+          return;
+        }
+      } catch (e) {}
+
+      const matched = localUsers.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password && u.role === selectedRole);
+      if (!matched) {
+        errEl.textContent = "Invalid email, password, or role selected.";
+        errEl.classList.remove("hidden");
+        return;
+      }
+      currentUser = matched;
+      enterWorkspace();
+    }
+
+    async function submitForgotPassword() {
+      const role = document.getElementById("fp-role").value;
+      const email = document.getElementById("fp-email").value.trim();
+      const new_password = document.getElementById("fp-newpw").value;
+      const msg = document.getElementById("fp-msg");
+
+      if (new_password.length < 6) {
+        msg.className = "text-xs font-semibold text-rose-400";
+        msg.textContent = "Password must be at least 6 characters.";
+        return;
+      }
+      try {
+        await fetch(`${API_BASE}/api/auth/forgot-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, role, new_password })
+        });
+      } catch (e) {}
+
+      const u = localUsers.find(x => x.email.toLowerCase() === email.toLowerCase() && x.role === role);
+      if (!u) {
+        msg.className = "text-xs font-semibold text-rose-400";
+        msg.textContent = "No account found matching that email and role.";
+        return;
+      }
+      u.password = new_password;
+      msg.className = "text-xs font-semibold text-emerald-400";
+      msg.textContent = "Password updated. You can sign in now.";
+    }
+
+    async function submitChangePassword() {
+      const old_password = document.getElementById("cp-old").value;
+      const new_password = document.getElementById("cp-new").value;
+      const msg = document.getElementById("cp-msg");
+      if (new_password.length < 6) {
+        msg.className = "text-xs font-semibold text-rose-400";
+        msg.textContent = "New password must be at least 6 characters.";
+        return;
+      }
+      try {
+        await fetch(`${API_BASE}/api/auth/change-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${jwtToken}` },
+          body: JSON.stringify({ old_password, new_password })
+        });
+      } catch (e) {}
+
+      const u = localUsers.find(x => x.email === currentUser.email);
+      if (u && u.password !== old_password) {
+        msg.className = "text-xs font-semibold text-rose-400";
+        msg.textContent = "Current password does not match.";
+        return;
+      }
+      if (u) u.password = new_password;
+      msg.className = "text-xs font-semibold text-emerald-400";
+      msg.textContent = "Password updated successfully.";
+    }
+
+    async function submitNewEmployee() {
+      const full_name = document.getElementById("ob-name").value.trim();
+      const email = document.getElementById("ob-email").value.trim();
+      const password = document.getElementById("ob-pass").value;
+      const role = document.getElementById("ob-role").value;
+      const department = document.getElementById("ob-dept").value;
+      const job_role = document.getElementById("ob-title").value.trim() || "Software Engineer";
+      const msg = document.getElementById("ob-msg");
+
+      if (!full_name || !email || password.length < 6) {
+        msg.className = "text-xs font-semibold text-rose-400";
+        msg.textContent = "Please fill in full name, email, and a 6+ character password.";
+        return;
+      }
+      try {
+        await fetch(`${API_BASE}/api/users/onboard`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${jwtToken}` },
+          body: JSON.stringify({ full_name, email, password, role, department, job_role })
+        });
+      } catch (e) {}
+
+      const emp_code = `TPZ-${1010 + localUsers.length}`;
+      localUsers.push({ emp_code, full_name, email, password, role, department, job_role });
+      teamMembers.unshift({ emp_code, full_name, department, job_role, risk: 14.0, hours: 172, hike: 1, eng: 4.5, wfh: 2, perf: 4.2 });
+      msg.className = "text-xs font-semibold text-emerald-400";
+      msg.textContent = `Account created for ${full_name} (${role}).`;
+      renderRoleWorkspace();
+    }
+
+    function enterWorkspace() {
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("app-workspace").classList.remove("hidden");
+      document.getElementById("header-user-badge").textContent = `${currentUser.name} • ${currentUser.role}`;
+
+      const addBtn = document.getElementById("btn-add-employee");
+      if (["Manager", "HR Executive", "Admin"].includes(currentUser.role)) {
+        addBtn.classList.remove("hidden");
+      } else {
+        addBtn.classList.add("hidden");
+      }
+      renderRoleWorkspace();
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById("app-workspace").classList.add("hidden");
+      document.getElementById("login-screen").classList.remove("hidden");
+    }
+
+    function renderRoleWorkspace() {
+      const container = document.getElementById("role-content");
+      const nav = document.getElementById("dynamic-nav");
+      const role = currentUser.role;
+
+      if (role === "Employee") {
+        nav.innerHTML = `<span class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-cyan-300">Employee Self-Service</span>`;
+        container.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass-3d rounded-2xl p-5">
+              <p class="text-[11px] uppercase text-slate-400 font-bold">Profile & Department</p>
+              <p class="text-lg font-extrabold text-white mt-1">${currentUser.name}</p>
+              <p class="text-xs text-cyan-300 mt-0.5">${currentUser.department || "Cloud Engineering"} • ${currentUser.emp_code}</p>
+            </div>
+            <div class="glass-3d rounded-2xl p-5">
+              <p class="text-[11px] uppercase text-slate-400 font-bold">Leave Balance</p>
+              <p class="text-lg font-extrabold text-emerald-400 mt-1">11 Casual • 14 Earned</p>
+              <p class="text-xs text-slate-400 mt-0.5">10 Sick Leaves Remaining</p>
+            </div>
+            <div class="glass-3d rounded-2xl p-5">
+              <p class="text-[11px] uppercase text-slate-400 font-bold">Latest Appraisal</p>
+              <p class="text-lg font-extrabold text-sky-400 mt-1">4.6 / 5.0 (Exceeds)</p>
+              <p class="text-xs text-slate-400 mt-0.5">H1 2026 Verified Review</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="glass-3d rounded-3xl p-5 lg:col-span-2 flex flex-col h-96">
+              <h2 class="font-bold text-base text-white mb-2">Ask HR Policy Assistant</h2>
+              <div id="emp-rag-chat" class="flex-1 overflow-y-auto space-y-2.5 p-3.5 rounded-2xl bg-slate-950/75 border border-slate-800 text-xs">
+                <div class="p-3 rounded-xl bg-indigo-500/20 border border-indigo-400/30 text-slate-100">
+                  Hi ${currentUser.name.split(" ")[0]}! Ask me anything about leave policies, hybrid work, medical insurance, or appraisal cycles.
+                </div>
+              </div>
+              <div class="flex gap-2 mt-3">
+                <input id="emp-rag-q" type="text" placeholder="Type your HR question..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white" onkeydown="if(event.key==='Enter') askEmpRag()">
+                <button onclick="askEmpRag()" class="btn-3d px-4 py-2 rounded-xl text-xs font-bold text-white cursor-pointer">Ask</button>
+              </div>
+            </div>
+
+            <div class="glass-3d rounded-3xl p-5 space-y-3">
+              <h2 class="font-bold text-base text-white">Company Updates</h2>
+              <div class="space-y-2.5 text-xs">
+                ${updatesData.map(u => `
+                  <div class="p-3.5 rounded-2xl bg-slate-900/75 border border-slate-800 space-y-1">
+                    <div class="flex justify-between"><span class="font-bold text-cyan-300">${u.title}</span><span class="text-[10px] text-slate-500">${u.date}</span></div>
+                    <p class="text-slate-300 leading-relaxed">${u.body}</p>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="glass-3d rounded-3xl p-5 space-y-3">
+              <h2 class="font-bold text-base text-white">Apply for Leave & View History</h2>
+              <div class="grid grid-cols-3 gap-2">
+                <select id="emp-ltype" class="bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white">
+                  <option>Earned Leave</option><option>Casual Leave</option><option>Sick Leave</option>
+                </select>
+                <input id="emp-ldates" type="text" placeholder="Dates (e.g. Dec 4–5)" class="bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white">
+                <button onclick="empApplyLeave()" class="btn-3d rounded-xl py-2 text-xs font-bold text-white cursor-pointer">Submit</button>
+              </div>
+              <input id="emp-lreason" type="text" placeholder="Reason for leave..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+              <div class="space-y-2 text-xs">
+                ${leavesData.map(l => `
+                  <div class="p-3 rounded-xl bg-slate-900/75 border border-slate-800 flex justify-between items-center">
+                    <div><p class="font-bold text-white">${l.type} • ${l.dates}</p><p class="text-slate-400 text-[11px]">${l.reason}</p></div>
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${l.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">${l.status}</span>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="glass-3d rounded-3xl p-5 space-y-3">
+              <h2 class="font-bold text-base text-white">Share Workplace Feedback</h2>
+              <p class="text-xs text-slate-400">Let HR know how your sprint workload, hybrid schedule, or team tooling feels.</p>
+              <textarea id="emp-fb-text" rows="3" placeholder="Write your feedback here..." class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-3 text-xs text-white"></textarea>
+              <button onclick="empSubmitFeedback()" class="btn-3d px-5 py-2.5 rounded-xl text-xs font-bold text-white cursor-pointer">Send Feedback</button>
+              <p id="emp-fb-msg" class="text-xs text-emerald-400 font-semibold"></p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (role === "Manager") {
+        nav.innerHTML = `<span class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300">Manager Team Workspace</span>`;
+        container.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="glass-3d rounded-3xl p-6 lg:col-span-2 space-y-4">
+              <div>
+                <h2 class="font-bold text-lg text-white">Team Attrition Risk Radar</h2>
+                <p class="text-xs text-slate-400">Scoped to your direct engineering pod</p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                ${teamMembers.map(m => `
+                  <div class="p-4 rounded-2xl bg-slate-900/80 border ${m.risk > 70 ? 'border-rose-500/40' : 'border-slate-800'} space-y-2">
+                    <div class="flex justify-between items-center">
+                      <span class="font-bold text-white text-sm">${m.full_name}</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold ${m.risk > 70 ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'}">${m.risk}% Risk</span>
+                    </div>
+                    <p class="text-xs text-cyan-300">${m.job_role} • ${m.hours} hrs/mo • Hike ${m.hike}m ago</p>
+                    <div class="flex gap-2 pt-1">
+                      <button onclick="mgrGenAI('playbook', '${m.full_name}', ${m.risk})" class="px-2.5 py-1.5 rounded-lg bg-indigo-500/25 text-indigo-200 text-[11px] font-bold hover:bg-indigo-500/40 cursor-pointer">Retention Plan</button>
+                      <button onclick="mgrGenAI('stay', '${m.full_name}', ${m.risk})" class="px-2.5 py-1.5 rounded-lg bg-cyan-500/25 text-cyan-200 text-[11px] font-bold hover:bg-cyan-500/40 cursor-pointer">Stay-Interview Script</button>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+              <div id="mgr-genai-box" class="hidden p-4 rounded-2xl bg-emerald-950/50 border border-emerald-500/40 text-xs text-emerald-100"></div>
+            </div>
+
+            <div class="space-y-6">
+              <div class="glass-3d rounded-3xl p-5 space-y-3">
+                <h2 class="font-bold text-base text-white">Team Leave Approvals</h2>
+                <div class="space-y-2 text-xs">
+                  ${leavesData.map(l => `
+                    <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex justify-between items-center gap-2">
+                      <div><p class="font-bold text-white">${l.emp}</p><p class="text-slate-400 text-[11px]">${l.type} • ${l.dates}</p></div>
+                      ${l.status === 'Pending'
+                        ? `<button onclick="mgrApproveLeave(${l.id})" class="btn-3d px-3 py-1 rounded-lg text-[11px] font-bold text-white cursor-pointer">Approve</button>`
+                        : `<span class="text-emerald-400 font-bold">Approved</span>`}
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+
+              <div class="glass-3d rounded-3xl p-5 space-y-3">
+                <h2 class="font-bold text-base text-white">Conduct Performance Review</h2>
+                <select id="rev-emp" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                  ${teamMembers.map(m => `<option>${m.full_name} (${m.emp_code})</option>`).join("")}
+                </select>
+                <div class="flex gap-2">
+                  <select id="rev-rating" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                    <option>5.0 - Exceptional</option><option selected>4.5 - Exceeds Expectations</option><option>4.0 - Meets Expectations</option>
+                  </select>
+                  <button onclick="submitReview()" class="btn-3d flex-1 py-2 rounded-xl text-xs font-bold text-white cursor-pointer">Save Review</button>
+                </div>
+                <p id="rev-msg" class="text-xs text-emerald-400 font-semibold"></p>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (role === "HR Executive") {
+        nav.innerHTML = `<span class="px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300">HR People Operations</span>`;
+        container.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="glass-3d rounded-3xl p-6 lg:col-span-2 space-y-4">
+              <h2 class="font-bold text-lg text-white">Employee Directory & Retention Overview</h2>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="text-slate-400 border-b border-slate-800">
+                    <tr><th class="py-2">Employee</th><th>Department</th><th>Role</th><th>Perf</th><th>Attrition Risk</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-800/70">
+                    ${teamMembers.map(m => `
+                      <tr>
+                        <td class="py-2.5 font-bold text-white">${m.full_name} <span class="text-slate-500">(${m.emp_code})</span></td>
+                        <td class="text-slate-300">${m.department}</td>
+                        <td class="text-slate-300">${m.job_role}</td>
+                        <td class="text-sky-300 font-bold">${m.perf}/5</td>
+                        <td><span class="px-2 py-0.5 rounded-full font-bold ${m.risk > 70 ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'}">${m.risk}%</span></td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="pt-4 border-t border-slate-800 space-y-2.5">
+                <h3 class="font-bold text-sm text-cyan-300">HR Policy Knowledge Base</h3>
+                <div class="flex gap-2">
+                  <input id="hr-pol-title" type="text" placeholder="Policy Title..." class="w-1/3 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                  <input id="hr-pol-body" type="text" placeholder="Policy summary to publish..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                  <button onclick="hrAddPolicy()" class="btn-3d px-4 py-2 rounded-xl text-xs font-bold text-white cursor-pointer">Publish</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                  ${policiesData.map(p => `<div class="p-3 rounded-xl bg-slate-900/75 border border-slate-800"><p class="font-bold text-cyan-300">${p.title}</p><p class="text-slate-400 mt-1">${p.content}</p></div>`).join("")}
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <div class="glass-3d rounded-3xl p-5 space-y-3">
+                <h2 class="font-bold text-base text-white">Pulse Survey Feedback</h2>
+                <div class="space-y-2 text-xs">
+                  ${surveysData.map(s => `
+                    <div class="p-3 rounded-xl bg-slate-900/75 border border-slate-800">
+                      <div class="flex justify-between font-bold"><span class="text-cyan-300">${s.dept}</span><span class="text-amber-300">${s.sentiment}</span></div>
+                      <p class="text-slate-300 mt-1">${s.text}</p>
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+
+              <div class="glass-3d rounded-3xl p-5 space-y-3">
+                <h2 class="font-bold text-base text-purple-300">Exit Interview Summarizer</h2>
+                <textarea id="hr-exit-text" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white">Leaving due to 18-month compensation lag and 55-hour release sprints despite great team culture.</textarea>
+                <button onclick="hrSummarizeExit()" class="btn-3d w-full py-2 rounded-xl text-xs font-bold text-white cursor-pointer">Summarize Notes</button>
+                <div id="hr-exit-out" class="hidden p-3 rounded-xl bg-purple-950/50 border border-purple-500/40 text-xs text-purple-100"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      nav.innerHTML = `<span class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300">System Administration</span>`;
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-3d rounded-3xl p-6 lg:col-span-2 space-y-4">
+            <div class="flex justify-between items-center">
+              <h2 class="font-bold text-lg text-white">Departments & Headcount</h2>
+              <button onclick="openModal('onboard-modal')" class="btn-3d px-4 py-2 rounded-xl text-xs font-bold text-white cursor-pointer">+ Add Employee</button>
+            </div>
+            <div class="flex gap-2">
+              <input id="adm-dept-name" type="text" placeholder="Department Name..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+              <input id="adm-dept-lead" type="text" placeholder="Department Lead..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white">
+              <button onclick="adminAddDept()" class="btn-3d px-4 py-2 rounded-xl text-xs font-bold text-white cursor-pointer">Add</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              ${departmentsData.map(d => `
+                <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800 flex justify-between items-center">
+                  <div><p class="font-bold text-white text-sm">${d.name}</p><p class="text-slate-400">Lead: ${d.lead}</p></div>
+                  <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 font-extrabold">${d.count} Staff</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
+          <div class="glass-3d rounded-3xl p-6 space-y-4">
+            <h2 class="font-bold text-base text-white">Active Accounts & Access</h2>
+            <div class="space-y-2 text-xs">
+              ${localUsers.map(u => `
+                <div class="p-3 rounded-xl bg-slate-900/75 border border-slate-800 flex justify-between items-center">
+                  <div><p class="font-bold text-white">${u.full_name}</p><p class="text-slate-400 text-[11px]">${u.email}</p></div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/25 text-cyan-300 font-bold">${u.role}</span>
+                </div>
+              `).join("")}
+            </div>
+            <div class="pt-3 border-t border-slate-800 space-y-2.5 text-xs">
+              <p class="font-bold text-cyan-300">Governance Controls</p>
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70"><span>Hide Risk Scores from Staff</span><input type="checkbox" checked class="accent-cyan-400"></label>
+              <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/70"><span>Scheduled Model Retraining</span><input type="checkbox" checked class="accent-cyan-400"></label>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function askEmpRag() {
+      const inp = document.getElementById("emp-rag-q");
+      const q = inp.value.trim();
+      if (!q) return;
+      const box = document.getElementById("emp-rag-chat");
+      box.innerHTML += `<div class="p-2.5 rounded-xl bg-slate-800 text-white ml-8">${q}</div>`;
+      inp.value = "";
+      let ans = policiesData[0].content;
+      let src = policiesData[0].title;
+      try {
+        const res = await fetch(`${API_BASE}/api/genai/rag-policy`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          ans = data.answer;
+          src = data.source_policy;
+        }
+      } catch (e) {
+        if (/wfh|hybrid|office|remote/i.test(q)) { ans = policiesData[1].content; src = policiesData[1].title; }
+        else if (/medical|insurance|health/i.test(q)) { ans = policiesData[2].content; src = policiesData[2].title; }
+      }
+      box.innerHTML += `<div class="p-3 rounded-xl bg-indigo-500/20 border border-indigo-400/30 text-cyan-100 mr-8"><strong>HR Assistant (${src}):</strong> ${ans}</div>`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function empApplyLeave() {
+      const type = document.getElementById("emp-ltype").value;
+      const dates = document.getElementById("emp-ldates").value.trim() || "Dec 10–11, 2026";
+      const reason = document.getElementById("emp-lreason").value.trim() || "Personal time off";
+      leavesData.unshift({ id: Date.now(), emp: `${currentUser.name} (${currentUser.emp_code})`, type, dates, reason, status: "Pending" });
+      renderRoleWorkspace();
+    }
+
+    function empSubmitFeedback() {
+      const txt = document.getElementById("emp-fb-text").value.trim();
+      if (!txt) return;
+      surveysData.unshift({ dept: currentUser.department || "Cloud Engineering", text: txt, sentiment: "Recorded" });
+      document.getElementById("emp-fb-text").value = "";
+      document.getElementById("emp-fb-msg").textContent = "Feedback submitted to HR.";
+    }
+
+    function mgrApproveLeave(id) {
+      const l = leavesData.find(x => x.id === id);
+      if (l) l.status = "Approved";
+      renderRoleWorkspace();
+    }
+
+    function submitReview() {
+      document.getElementById("rev-msg").textContent = "Performance rating saved.";
+    }
+
+    function mgrGenAI(mode, name, risk) {
+      const box = document.getElementById("mgr-genai-box");
+      box.classList.remove("hidden");
+      if (mode === "playbook") {
+        box.innerHTML = `<strong>Retention Plan (${name} • ${risk}% Risk):</strong> Propose a 12% market adjustment, cap sprint hours at 175/month, and enable 3-day WFH flexibility.`;
+      } else {
+        box.innerHTML = `<strong>Stay-Interview Guide (${name}):</strong> "Hi ${name.split(" ")[0]}, your work on our delivery pod is vital. Let's review your compensation timeline and sprint workload this Friday."`;
+      }
+    }
+
+    function hrAddPolicy() {
+      const title = document.getElementById("hr-pol-title").value.trim();
+      const content = document.getElementById("hr-pol-body").value.trim();
+      if (!title || !content) return;
+      policiesData.unshift({ title, content });
+      renderRoleWorkspace();
+    }
+
+    function hrSummarizeExit() {
+      const out = document.getElementById("hr-exit-out");
+      out.classList.remove("hidden");
+      out.innerHTML = `<strong>Summary:</strong> Key drivers are an 18-month compensation lag and 55-hour release sprints. Recommended next step: review pay bands and cap overtime.`;
+    }
+
+    function adminAddDept() {
+      const name = document.getElementById("adm-dept-name").value.trim();
+      const lead = document.getElementById("adm-dept-lead").value.trim() || "Assigned Lead";
+      if (!name) return;
+      departmentsData.push({ name, lead, count: 15 });
+      renderRoleWorkspace();
+    }
+
+    const card = document.getElementById("tilt-card");
+    document.addEventListener("mousemove", e => {
+      if (document.getElementById("login-screen").classList.contains("hidden")) return;
+      const rx = (window.innerHeight / 2 - e.pageY) / 30;
+      const ry = (e.pageX - window.innerWidth / 2) / 30;
+      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("webgl-bg"), alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.z = 30;
+
+    const mesh1 = new THREE.Mesh(new THREE.IcosahedronGeometry(14, 2), new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.14 }));
+    const mesh2 = new THREE.Mesh(new THREE.OctahedronGeometry(7, 1), new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true, transparent: true, opacity: 0.2 }));
+    scene.add(mesh1, mesh2);
+    (function animate() {
+      requestAnimationFrame(animate);
+      mesh1.rotation.y += 0.002;
+      mesh2.rotation.y -= 0.003;
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>
